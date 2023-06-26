@@ -28,8 +28,8 @@ const Contact = () => {
 
     emailjs
     .send(
-      'service_lmz340k',
-      'template_wn29hes',
+      import.meta.env.VITE_EMAILJS_SERVICE_ID,
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
       {
         from_name: form.name,
         to_name: 'Giancarlo',
@@ -37,7 +37,7 @@ const Contact = () => {
         to_email: 'gianpoemape77@gmail.com',
         message: form.message
       },
-      'Z731Rabjbpn-z2LXR' //public key
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY //public key
     )
     .then(
       () => {
