@@ -8,7 +8,13 @@ jobs:
   my_deploy_job:
     runs-on: ubuntu-latest
     name: deploy to prod
+    
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      
+      - name: Setup Node
+        uses: actions/setup-node@v8
+      
     
     
