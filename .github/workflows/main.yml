@@ -1,0 +1,14 @@
+name: cicd-giposmart
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  my_deploy_job:
+    runs-on: ubuntu-latest
+    name: deploy to prod
+    steps:
+      - uses: actions/checkout@v2
+    
+    
