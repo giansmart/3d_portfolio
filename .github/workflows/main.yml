@@ -10,8 +10,8 @@ jobs:
     name: deploy to prod
     # These permisions are needed to interact with GitHub's OIDC Tojen endpoint
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
     
     steps:
       - name: Checkout repo
