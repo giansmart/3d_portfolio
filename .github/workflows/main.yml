@@ -36,6 +36,8 @@ jobs:
         with:
           role-to-assume: ${{ env.AWS_ASSUME_ROLE_ARN }}
           aws-region: us-west-2
+          role-session-name: MySessionName
+          
       
       - name: Copy files artifacts to s3 bucket
         run: |
