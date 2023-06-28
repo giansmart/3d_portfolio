@@ -4,16 +4,16 @@ import {
     creator,
     web,
     javascript,
-    typescript,
+    oracle,
     html,
     css,
     reactjs,
-    redux,
-    tailwind,
-    nodejs,
-    mongodb,
+    tensorflow,
+    postgres,
+    spark,
+    aws,
     git,
-    figma,
+    pandas,
     docker,
     indra,
     hatchworks,
@@ -22,7 +22,7 @@ import {
     carrent,
     jobit,
     tripguide,
-    threejs,
+    python,
   } from "../assets";
   
   export const navLinks = [
@@ -73,40 +73,40 @@ import {
       icon: javascript,
     },
     {
-      name: "TypeScript",
-      icon: typescript,
-    },
-    {
       name: "React JS",
       icon: reactjs,
     },
     {
-      name: "Redux Toolkit",
-      icon: redux,
+      name: "Tensorflow",
+      icon: tensorflow,
     },
     {
-      name: "Tailwind CSS",
-      icon: tailwind,
+      name: "Oracle",
+      icon: oracle,
     },
     {
-      name: "Node JS",
-      icon: nodejs,
+      name: "Postgres",
+      icon: postgres,
     },
     {
-      name: "MongoDB",
-      icon: mongodb,
+      name: "Spark",
+      icon: spark,
     },
     {
-      name: "Three JS",
-      icon: threejs,
+      name: "AWS",
+      icon: aws,
+    },
+    {
+      name: "Python",
+      icon: python,
     },
     {
       name: "git",
       icon: git,
     },
     {
-      name: "figma",
-      icon: figma,
+      name: "Pandas",
+      icon: pandas,
     },
     {
       name: "docker",
@@ -173,7 +173,7 @@ import {
   const testimonials = [
     {
       testimonial:
-        "Excelente desarrollador de muy fácil adaptación a cualquier tecnología actual. Cuenta con pensamiento crítico para poder solucionar los problemas de manera rápida.",
+        "Giancarlo is a talented professional with extensive experience in solution development, data analytics, and team leadership. He has a broad range of skills and techniques in technology, which makes him an ideal prospect for any company...",
       name: "Jhonny G. Murayari",
       designation: "Analista Funcioal TI",
       company: "Grupo AJE",

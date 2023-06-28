@@ -9,17 +9,17 @@ import close from "./close.svg";
 
 import css from "./tech/css.png";
 import docker from "./tech/docker.png";
-import figma from "./tech/figma.png";
+import pandas from "./tech/pandas.png";
 import git from "./tech/git.png";
 import html from "./tech/html.png";
 import javascript from "./tech/javascript.png";
-import mongodb from "./tech/mongodb.png";
-import nodejs from "./tech/nodejs.png";
+import aws from "./tech/aws.png";
+import spark from "./tech/spark.png";
 import reactjs from "./tech/reactjs.png";
-import redux from "./tech/redux.png";
-import tailwind from "./tech/tailwind.png";
-import typescript from "./tech/typescript.png";
-import threejs from "./tech/threejs.svg";
+import tensorflow from "./tech/tensorflow.png";
+import postgres from "./tech/postgres.png";
+import oracle from "./tech/oracle.png";
+import python from "./tech/python.png";
 
 import indra from "./company/indra.png";
 import taxtech from "./company/taxtech.png";
@@ -41,17 +41,17 @@ export {
   close,
   css,
   docker,
-  figma,
+  pandas,
   git,
   html,
   javascript,
-  mongodb,
-  nodejs,
+  aws,
+  spark,
   reactjs,
-  redux,
-  tailwind,
-  typescript,
-  threejs,
+  tensorflow,
+  postgres,
+  oracle,
+  python,
   indra,
   taxtech,
   hatchworks,
