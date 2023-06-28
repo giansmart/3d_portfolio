@@ -174,10 +174,10 @@ import {
     {
       testimonial:
         "Excelente desarrollador de muy fácil adaptación a cualquier tecnología actual. Cuenta con pensamiento crítico para poder solucionar los problemas de manera rápida.",
-      name: "Sara Lee",
-      designation: "CFO",
-      company: "Acme Co",
-      image: "https://randomuser.me/api/portraits/women/4.jpg",
+      name: "Jhonny G. Murayari",
+      designation: "Analista Funcioal TI",
+      company: "Grupo AJE",
+      image: "https://media.licdn.com/dms/image/C4E03AQEjkUWxIryL6A/profile-displayphoto-shrink_200_200/0/1613406119847?e=1693440000&v=beta&t=om0brWM9yKME-P5z5QfEEKKrr_w_yVbHWx9v_tu9kqY",
     },
     {
       testimonial:
