@@ -50,6 +50,11 @@ export const translations = {
       prev: "◀ PREV",
       next: "NEXT ▶",
     },
+    experience: {
+      counter: (n, total) => `EXPERIENCE ${n} / ${total}`,
+      prev: "◀ PREV",
+      next: "NEXT ▶",
+    },
     about: {
       education: "EDUCATION",
       certifications: "CERTIFICATIONS",
@@ -113,6 +118,11 @@ export const translations = {
     },
     projects: {
       counter: (n, total) => `PROYECTO ${n} / ${total}`,
+      prev: "◀ ANTERIOR",
+      next: "SIGUIENTE ▶",
+    },
+    experience: {
+      counter: (n, total) => `EXPERIENCIA ${n} / ${total}`,
       prev: "◀ ANTERIOR",
       next: "SIGUIENTE ▶",
     },

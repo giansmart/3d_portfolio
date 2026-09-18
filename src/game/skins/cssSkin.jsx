@@ -172,7 +172,15 @@ export function ZoneBuilding({ zone, active, lit }) {
   );
 }
 
+// A faceted warning sign, built with the same beveled-polygon language as
+// the fragment gem (light/dark facets + hard pixel outline) instead of a
+// flat CSS border-triangle, so it reads as part of the same art style.
 export function ObstacleMarker({ x, y, active, resolved, title }) {
+  const face = resolved ? "#39ff88" : "#ff6b9d";
+  const shade = resolved ? "#1f8f52" : "#b8395f";
+  const highlight = resolved ? "#c8ffe0" : "#ffcfe0";
+  const glow = resolved ? "rgba(57,255,136,0.55)" : "rgba(255,107,157,0.6)";
+
   return (
     <div className="absolute flex flex-col items-center gap-3" style={{ left: x - 48, top: y - 66, width: 96 }}>
       <div
@@ -182,29 +190,26 @@ export function ObstacleMarker({ x, y, active, resolved, title }) {
           height: 52,
           transform: `scale(${BUILDING_SCALE})`,
           transformOrigin: "50% 100%",
-          filter: active ? "brightness(1.15)" : "none",
+          filter: `drop-shadow(0 0 ${active ? 10 : 6}px ${glow})`,
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 6,
-            width: 0,
-            height: 0,
-            borderLeft: "28px solid transparent",
-            borderRight: "28px solid transparent",
-            borderBottom: `44px solid ${resolved ? "#39ff88" : "#ff6b9d"}`,
-          }}
-        />
-        <span
-          className="pixel-font"
-          style={{ position: "absolute", left: 22, top: 30, fontSize: 16, color: "#0b0e1a" }}
-        >
-          {resolved ? "✓" : "!"}
-        </span>
+        <svg viewBox="0 0 56 52" width="56" height="52" style={{ overflow: "visible" }}>
+          <polygon points="28,4 52,46 4,46" fill="#0b0e1a" transform="translate(1.5,2)" opacity="0.45" />
+          <polygon points="28,4 4,46 28,46" fill={face} />
+          <polygon points="28,4 52,46 28,46" fill={shade} />
+          <polygon points="28,11 44,41 28,41" fill={highlight} opacity="0.3" />
+          <polygon points="28,4 52,46 4,46" fill="none" stroke="#0b0e1a" strokeWidth="3" strokeLinejoin="round" />
+          {resolved ? (
+            <path d="M18 27 L25 34 L39 18" fill="none" stroke="#0b0e1a" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+          ) : (
+            <>
+              <rect x="25" y="17" width="6" height="17" fill="#0b0e1a" />
+              <rect x="25" y="37" width="6" height="6" fill="#0b0e1a" />
+            </>
+          )}
+        </svg>
       </div>
-      <span className="pixel-font" style={{ fontSize: 11, color: resolved ? "#39ff88" : "#ff6b9d", letterSpacing: 1, textAlign: "center" }}>
+      <span className="pixel-font" style={{ fontSize: 11, color: face, letterSpacing: 1, textAlign: "center" }}>
         {title.toUpperCase()}
       </span>
     </div>

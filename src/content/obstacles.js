@@ -12,7 +12,7 @@ export const obstacles = {
         "Traced it to a single nearest-neighbor feature. Pulling it out — and recalibrating the model with MLflow to keep accuracy honest — collapsed the runtime; the other 99% just vanished. [TODO: what this taught you, or how it changed the way you profile things now]",
     },
     es: {
-      title: "EL MURO DE LATENCIA",
+      title: "EL CUELLO DE BOTELLA",
       problem:
         "Una carga diaria de 150M de registros, y una etapa del clasificador que se comía en silencio el 99% del tiempo de búsqueda. Cualquier otra optimización apenas movía la aguja. [TODO: qué se sintió realmente perseguir este problema]",
       resolution:
@@ -21,18 +21,18 @@ export const obstacles = {
   },
   "illegible-script": {
     en: {
-      title: "THE ILLEGIBLE SCRIPT",
+      title: "THE MESSY PRESCRIPTIONS",
       problem:
-        "Handwritten prescriptions — some of the messiest input a pipeline can get. One agent trying to read, match against a pharmaceutical database, and apply insurance rules in a single pass kept tripping over its own assumptions. [TODO: what specifically kept failing, and how bad the early accuracy was]",
+        "Handwritten prescriptions — some of the messiest input a pipeline can get. One agent tried to read the doctor's handwriting, cross-check medications against a pharmaceutical database, and apply insurance rules in a single pass — but the embedding wasn't weighting the medication name properly, so matches kept coming back irrelevant.",
       resolution:
-        "Split it into a chain of specialists instead of one generalist: one agent for image preprocessing, one for extraction, one for entity matching, one for business rules — coordinated with LangGraph and A2A, watched with LangSmith. [TODO: what changed once you split it up, or what you'd do differently now]",
+        "Split it into a chain of specialists instead of one generalist: one agent for image preprocessing, one for extraction, one for entity matching, one for business rules. I repeated the medication name in the text used to generate the embedding, giving it more weight and improving result relevance.",
     },
     es: {
-      title: "EL SCRIPT ILEGIBLE",
+      title: "RECETAS PROBLEMÁTICAS",
       problem:
-        "Recetas médicas escritas a mano — de lo más caótico que puede recibir un pipeline. Un solo agente intentando leer, cruzar contra una base de datos farmacéutica y aplicar reglas de seguros en un solo paso tropezaba constantemente con sus propias suposiciones. [TODO: qué fallaba específicamente, y qué tan mala era la precisión al inicio]",
+        "Recetas médicas escritas a mano — de lo más caótico que puede recibir un pipeline. Un agente intentaba leer la letra del médico, cotejar los medicamentos contra una base de datos farmacéutica y aplicar reglas de seguro en un solo paso, pero el embedding no priorizaba bien el nombre del medicamento, así que los resultados salían poco relevantes.",
       resolution:
-        "Lo dividí en una cadena de especialistas en vez de un solo generalista: un agente para preprocesar imágenes, uno para extracción, uno para matching de entidades, uno para las reglas de negocio — coordinados con LangGraph y A2A, observados con LangSmith. [TODO: qué cambió al dividirlo, o qué harías diferente ahora]",
+        "Lo dividí en una cadena de especialistas en vez de un solo generalista: un agente para preprocesar imágenes, uno para extracción, uno para matching de entidades, uno para las reglas de negocio. Repetí el nombre del medicamento en el texto usado para el embedding, dándole más peso y mejorando la relevancia de los resultados.",
     },
   },
 };
