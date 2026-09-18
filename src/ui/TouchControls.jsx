@@ -1,0 +1,107 @@
+import { useRef } from "react";
+
+const DIRS = {
+  up: { x: 0, y: -1 },
+  down: { x: 0, y: 1 },
+  left: { x: -1, y: 0 },
+  right: { x: 1, y: 0 },
+};
+
+const btnStyle = {
+  width: 52,
+  height: 52,
+  background: "rgba(18,23,42,0.85)",
+  border: "2px solid #39ff88",
+  color: "#39ff88",
+  fontSize: 18,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  touchAction: "none",
+  userSelect: "none",
+};
+
+export default function TouchControls({ onMove, onInteract, showInteract }) {
+  const activeDirs = useRef(new Set());
+
+  const recompute = () => {
+    let x = 0;
+    let y = 0;
+    activeDirs.current.forEach((dir) => {
+      x += DIRS[dir].x;
+      y += DIRS[dir].y;
+    });
+    const len = Math.hypot(x, y);
+    onMove(len > 0 ? x / len : 0, len > 0 ? y / len : 0);
+  };
+
+  const press = (dir) => () => {
+    activeDirs.current.add(dir);
+    recompute();
+  };
+  const release = (dir) => () => {
+    activeDirs.current.delete(dir);
+    recompute();
+  };
+
+  return (
+    <div className="md:hidden">
+      <div className="fixed left-5 bottom-6 z-20" style={{ width: 168, height: 168 }}>
+        <button
+          style={{ ...btnStyle, position: "absolute", left: 58, top: 0 }}
+          onPointerDown={press("up")}
+          onPointerUp={release("up")}
+          onPointerLeave={release("up")}
+          aria-label="Move up"
+        >
+          &#9650;
+        </button>
+        <button
+          style={{ ...btnStyle, position: "absolute", left: 58, top: 116 }}
+          onPointerDown={press("down")}
+          onPointerUp={release("down")}
+          onPointerLeave={release("down")}
+          aria-label="Move down"
+        >
+          &#9660;
+        </button>
+        <button
+          style={{ ...btnStyle, position: "absolute", left: 0, top: 58 }}
+          onPointerDown={press("left")}
+          onPointerUp={release("left")}
+          onPointerLeave={release("left")}
+          aria-label="Move left"
+        >
+          &#9664;
+        </button>
+        <button
+          style={{ ...btnStyle, position: "absolute", left: 116, top: 58 }}
+          onPointerDown={press("right")}
+          onPointerUp={release("right")}
+          onPointerLeave={release("right")}
+          aria-label="Move right"
+        >
+          &#9654;
+        </button>
+      </div>
+
+      {showInteract && (
+        <button
+          onClick={onInteract}
+          className="fixed right-6 bottom-10 z-20 pixel-font"
+          style={{
+            width: 76,
+            height: 76,
+            borderRadius: "50%",
+            background: "#ffb84d",
+            color: "#0b0e1a",
+            border: "3px solid #0b0e1a",
+            fontSize: 10,
+          }}
+        >
+          E
+        </button>
+      )}
+    </div>
+  );
+}
