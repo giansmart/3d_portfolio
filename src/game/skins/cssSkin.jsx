@@ -292,6 +292,15 @@ function Flag({ code }) {
       </svg>
     );
   }
+  if (code === "CR") {
+    return (
+      <svg viewBox="0 0 20 14" {...common}>
+        <rect width="20" height="14" fill="#002b7f" />
+        <rect y="2.33" width="20" height="9.33" fill="#fff" />
+        <rect y="4.67" width="20" height="4.67" fill="#ce1126" />
+      </svg>
+    );
+  }
   return null;
 }
 
