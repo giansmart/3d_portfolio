@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 const DIRS = {
   up: { x: 0, y: -1 },
@@ -22,6 +23,7 @@ const btnStyle = {
 };
 
 export default function TouchControls({ onMove, onInteract, showInteract }) {
+  const { dict } = useLanguage();
   const activeDirs = useRef(new Set());
 
   const recompute = () => {
@@ -52,7 +54,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           onPointerDown={press("up")}
           onPointerUp={release("up")}
           onPointerLeave={release("up")}
-          aria-label="Move up"
+          aria-label={dict.touch.up}
         >
           &#9650;
         </button>
@@ -61,7 +63,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           onPointerDown={press("down")}
           onPointerUp={release("down")}
           onPointerLeave={release("down")}
-          aria-label="Move down"
+          aria-label={dict.touch.down}
         >
           &#9660;
         </button>
@@ -70,7 +72,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           onPointerDown={press("left")}
           onPointerUp={release("left")}
           onPointerLeave={release("left")}
-          aria-label="Move left"
+          aria-label={dict.touch.left}
         >
           &#9664;
         </button>
@@ -79,7 +81,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           onPointerDown={press("right")}
           onPointerUp={release("right")}
           onPointerLeave={release("right")}
-          aria-label="Move right"
+          aria-label={dict.touch.right}
         >
           &#9654;
         </button>
@@ -88,6 +90,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
       {showInteract && (
         <button
           onClick={onInteract}
+          aria-label={dict.touch.interact}
           className="fixed right-6 bottom-10 z-20 pixel-font"
           style={{
             width: 76,

@@ -296,7 +296,7 @@ export function PersonMarker({ x, y, active, firstName, country, color, facingLe
 // In-world speech bubble — anchored well above the NPC's (and cat's) heads
 // via translateY(-100%) from a high offset, so it never overlaps either
 // character; grows upward as the quote gets longer.
-export function DialogueBubble({ x, y, name, company, country, quote, accent }) {
+export function DialogueBubble({ x, y, name, company, country, quote, accent, linkedin, verifyLabel }) {
   return (
     <div className="absolute" style={{ left: x - 160, top: y - 120, width: 320, zIndex: 5 }}>
       <div style={{ position: "relative", transform: "translateY(-100%)" }}>
@@ -322,6 +322,17 @@ export function DialogueBubble({ x, y, name, company, country, quote, accent }) 
           <p className="mono-font" style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "#eef1e8" }}>
             &#8220;{quote}&#8221;
           </p>
+          {linkedin && (
+            <a
+              href={linkedin}
+              target="_blank"
+              rel="noreferrer"
+              className="mono-font"
+              style={{ display: "inline-block", marginTop: 10, fontSize: 11, color: accent, textDecoration: "underline" }}
+            >
+              {verifyLabel}
+            </a>
+          )}
           <div
             style={{
               position: "absolute",

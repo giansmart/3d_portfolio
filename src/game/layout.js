@@ -94,7 +94,7 @@ export const OBSTACLES = [
 // joined by id. Positions are points on the River curve, spread across all
 // four legs of the journey with clearance from everything above.
 export const RECOMMENDATION_SPOTS = [
-  { id: "mark-waldhauser", x: 377, y: 1036, radius: 110 },
+  { id: "mark-waldhauser", x: 465, y: 888, radius: 110 },
   { id: "naresh-kuppusamy", x: 1293, y: 663, radius: 110 },
   { id: "juan-carlos-castillo", x: 1620, y: 741, radius: 110 },
   { id: "christian-rivera", x: 2152, y: 750, radius: 110 },

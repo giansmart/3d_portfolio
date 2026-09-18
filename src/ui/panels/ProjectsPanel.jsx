@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { projects } from "../../content/projects";
+import { useLanguage, pickLang } from "../../i18n/LanguageContext";
 
 export default function ProjectsPanel() {
+  const { dict, lang } = useLanguage();
   const [index, setIndex] = useState(0);
   const project = projects[index];
+  const localized = pickLang(project, lang);
   const atStart = index === 0;
   const atEnd = index === projects.length - 1;
 
@@ -22,15 +25,15 @@ export default function ProjectsPanel() {
   return (
     <div>
       <div className="pixel-font" style={{ fontSize: 10, color: "#9aa39a", marginBottom: 12 }}>
-        PROJECT {index + 1} / {projects.length}
+        {dict.projects.counter(index + 1, projects.length)}
       </div>
 
       <div className="pixel-font" style={{ fontSize: 15, color: "#39ff88", marginBottom: 12, lineHeight: 1.6 }}>
-        {project.title}
+        {localized.title}
       </div>
 
       <p className="mono-font" style={{ color: "#cfd6cc", fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>
-        {project.desc}
+        {localized.desc}
       </p>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", margin: "16px 0 24px" }}>
@@ -57,7 +60,7 @@ export default function ProjectsPanel() {
             opacity: atStart ? 0.3 : 1,
           }}
         >
-          &#9664; PREV
+          {dict.projects.prev}
         </button>
         <button
           type="button"
@@ -74,7 +77,7 @@ export default function ProjectsPanel() {
             opacity: atEnd ? 0.3 : 1,
           }}
         >
-          NEXT &#9654;
+          {dict.projects.next}
         </button>
       </div>
     </div>

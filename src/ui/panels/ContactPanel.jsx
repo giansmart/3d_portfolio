@@ -1,5 +1,6 @@
 import { profile } from "../../content/profile";
 import { useContactForm } from "../../hooks/useContactForm";
+import { useLanguage } from "../../i18n/LanguageContext";
 
 const fieldStyle = {
   background: "#0b0e1a",
@@ -10,20 +11,21 @@ const fieldStyle = {
 };
 
 export default function ContactPanel() {
+  const { dict } = useLanguage();
   const { form, loading, status, handleChange, submit } = useContactForm();
 
   return (
     <div>
       <p className="mono-font" style={{ color: "#cfd6cc", fontSize: 14, lineHeight: 1.7, marginTop: 0 }}>
-        Send a signal —{" "}
+        {dict.contact.introPrefix}{" "}
         <a href={`mailto:${profile.email}`} style={{ color: "#39ff88" }}>
           {profile.email}
         </a>{" "}
-        or{" "}
+        {dict.contact.introOr}{" "}
         <a href={profile.linkedin} target="_blank" rel="noreferrer" style={{ color: "#39ff88" }}>
-          LinkedIn
+          {dict.contact.introLinkedin}
         </a>
-        . Based in {profile.location} — open to remote work worldwide.
+        {dict.contact.introSuffix(profile.location)}
       </p>
 
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 20 }}>
@@ -32,7 +34,7 @@ export default function ContactPanel() {
           name="name"
           value={form.name}
           onChange={handleChange}
-          placeholder="Your name"
+          placeholder={dict.contact.namePlaceholder}
           className="mono-font"
           style={fieldStyle}
         />
@@ -42,7 +44,7 @@ export default function ContactPanel() {
           name="email"
           value={form.email}
           onChange={handleChange}
-          placeholder="Your email"
+          placeholder={dict.contact.emailPlaceholder}
           className="mono-font"
           style={fieldStyle}
         />
@@ -51,7 +53,7 @@ export default function ContactPanel() {
           name="message"
           value={form.message}
           onChange={handleChange}
-          placeholder="Message"
+          placeholder={dict.contact.messagePlaceholder}
           rows={4}
           className="mono-font"
           style={{ ...fieldStyle, resize: "vertical" }}
@@ -69,16 +71,16 @@ export default function ContactPanel() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "SENDING..." : "SEND SIGNAL"}
+          {loading ? dict.contact.sending : dict.contact.send}
         </button>
         {status === "success" && (
           <div className="mono-font" style={{ color: "#39ff88", fontSize: 12 }}>
-            Message sent — thank you!
+            {dict.contact.success}
           </div>
         )}
         {status === "error" && (
           <div className="mono-font" style={{ color: "#ff6b9d", fontSize: 12 }}>
-            Something went wrong — email me directly instead.
+            {dict.contact.error}
           </div>
         )}
       </form>

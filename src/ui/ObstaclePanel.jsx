@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { obstacles } from "../content/obstacles";
 import { MemeCat } from "../game/skins/cssSkin";
+import { useLanguage, pickLang } from "../i18n/LanguageContext";
 
 export default function ObstaclePanel({ obstacleId, resolved, onResolve, onClose }) {
-  const obstacle = obstacles[obstacleId];
+  const { dict, lang } = useLanguage();
+  const obstacle = pickLang(obstacles[obstacleId], lang);
   const [revealed, setRevealed] = useState(resolved);
   const closeRef = useRef(null);
 
@@ -51,7 +53,7 @@ export default function ObstaclePanel({ obstacleId, resolved, onResolve, onClose
                 cursor: "pointer",
               }}
             >
-              ESC / &#10005;
+              {dict.obstacle.close}
             </button>
           </div>
 
@@ -80,7 +82,7 @@ export default function ObstaclePanel({ obstacleId, resolved, onResolve, onClose
                 marginTop: 8,
               }}
             >
-              DEBUG IT &#8594;
+              {dict.obstacle.debug}
             </button>
           )}
         </div>

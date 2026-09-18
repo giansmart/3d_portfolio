@@ -7,9 +7,12 @@ import docker from "../assets/tech/docker.png";
 import postgres from "../assets/tech/postgres.png";
 import git from "../assets/tech/git.png";
 
+// Group labels are bilingual; item names are tool/tech names, which stay the
+// same in any language.
 export const skillGroups = [
   {
-    label: "Machine Learning & AI",
+    en: { label: "Machine Learning & AI" },
+    es: { label: "Machine Learning e IA" },
     items: [
       { name: "Python", icon: python },
       { name: "TensorFlow", icon: tensorflow },
@@ -20,7 +23,8 @@ export const skillGroups = [
     ],
   },
   {
-    label: "GenAI & LLM Systems",
+    en: { label: "GenAI & LLM Systems" },
+    es: { label: "Sistemas GenAI y LLM" },
     items: [
       { name: "RAG / LangChain" },
       { name: "LangGraph" },
@@ -29,7 +33,8 @@ export const skillGroups = [
     ],
   },
   {
-    label: "Data Engineering",
+    en: { label: "Data Engineering" },
+    es: { label: "Ingeniería de Datos" },
     items: [
       { name: "PySpark", icon: spark },
       { name: "Databricks" },
@@ -38,7 +43,8 @@ export const skillGroups = [
     ],
   },
   {
-    label: "Cloud & Infrastructure",
+    en: { label: "Cloud & Infrastructure" },
+    es: { label: "Nube e Infraestructura" },
     items: [
       { name: "AWS", icon: aws },
       { name: "Docker", icon: docker },

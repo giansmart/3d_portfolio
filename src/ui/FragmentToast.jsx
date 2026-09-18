@@ -1,4 +1,7 @@
+import { useLanguage } from "../i18n/LanguageContext";
+
 export default function FragmentToast({ title }) {
+  const { dict } = useLanguage();
   if (!title) return null;
   return (
     <div
@@ -14,7 +17,7 @@ export default function FragmentToast({ title }) {
       }}
       role="status"
     >
-      &#9670; FRAGMENT FOUND — {title.toUpperCase()}
+      &#9670; {dict.toast.found} {title.toUpperCase()}
     </div>
   );
 }

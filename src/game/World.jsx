@@ -27,6 +27,7 @@ import JournalPanel from "../ui/JournalPanel";
 import FinalePanel from "../ui/FinalePanel";
 import FragmentToast from "../ui/FragmentToast";
 import ObstaclePanel from "../ui/ObstaclePanel";
+import { useLanguage, pickLang } from "../i18n/LanguageContext";
 
 const SOLIDS = ZONES.map((z) => ({ x: z.x, y: z.y, w: z.w, h: z.h }));
 const BOUNDS = { minX: 0, minY: 0, maxX: WORLD.w, maxY: WORLD.h };
@@ -112,6 +113,7 @@ export default function World({ onExit }) {
     }
   });
   const { getVector, setTouchVector } = useInput();
+  const { lang, dict } = useLanguage();
 
   // Dialogue bubbles are lightweight — they don't pause the world like the
   // full-screen panels do; you can keep walking, and walking away from the
@@ -199,7 +201,7 @@ export default function World({ onExit }) {
           const nextCollected = new Set(collected).add(spot.id);
           setCollected(nextCollected);
           const frag = fragments.find((f) => f.id === spot.id);
-          setToastTitle(frag.title);
+          setToastTitle(pickLang(frag, lang).title);
           clearTimeout(toastTimerRef.current);
           toastTimerRef.current = setTimeout(() => setToastTitle(null), 2500);
           break;
@@ -266,7 +268,7 @@ export default function World({ onExit }) {
   const nearZone = ZONES.find((z) => z.id === nearZoneId) || null;
   const allFound = collected.size === FRAGMENT_SPOTS.length;
 
-  const promptLabel = nearObstacleId ? obstacles[nearObstacleId].title : nearZone?.label.toUpperCase();
+  const promptLabel = nearObstacleId ? pickLang(obstacles[nearObstacleId], lang).title : nearZone?.label.toUpperCase();
   const catVariant = nearObstacleId ? (resolvedObstacles.has(nearObstacleId) ? "happy" : "sad") : nearZoneId || "walk";
 
   return (
@@ -287,7 +289,7 @@ export default function World({ onExit }) {
             y={ob.y}
             active={ob.id === nearObstacleId}
             resolved={resolvedObstacles.has(ob.id)}
-            title={obstacles[ob.id].title}
+            title={pickLang(obstacles[ob.id], lang).title}
           />
         ))}
         {RECOMMENDATION_SPOTS.map((spot) => {
@@ -315,6 +317,8 @@ export default function World({ onExit }) {
                   country={person.country}
                   quote={person.quote}
                   accent={color}
+                  linkedin={person.linkedin}
+                  verifyLabel={dict.recommendation.verify}
                 />
               )}
             </Fragment>
