@@ -14,7 +14,6 @@ export const translations = {
       badgeMasters: "M.S. DATA SCIENCE · UTEC '26",
     },
     hud: {
-      player: "PLAYER: GIANCARLO",
       pressE: "PRESS E —",
       soundOn: "♪ ON",
       soundOff: "♪ OFF",
@@ -81,7 +80,6 @@ export const translations = {
       badgeMasters: "MAESTRÍA DATA SCIENCE · UTEC '26",
     },
     hud: {
-      player: "JUGADOR: GIANCARLO",
       pressE: "PULSA E —",
       soundOn: "♪ SÍ",
       soundOff: "♪ NO",

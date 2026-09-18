@@ -55,7 +55,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
 
   return (
     <div className="md:hidden">
-      <div className="fixed left-5 bottom-6 z-20" style={{ width: 168, height: 168 }}>
+      <div className="fixed right-6 bottom-28 z-20" style={{ width: 168, height: 168 }}>
         <button
           style={{ ...btnStyle, position: "absolute", left: 58, top: 0 }}
           onPointerDown={press("up")}
@@ -96,32 +96,36 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
         >
           &#9654;
         </button>
-      </div>
 
-      {showInteract && (
-        <button
-          onClick={onInteract}
-          onContextMenu={preventContextMenu}
-          aria-label={dict.touch.interact}
-          className="fixed right-6 bottom-10 z-20 pixel-font"
-          style={{
-            width: 76,
-            height: 76,
-            borderRadius: "50%",
-            background: "#ffb84d",
-            color: "#0b0e1a",
-            border: "3px solid #0b0e1a",
-            fontSize: 10,
-            touchAction: "none",
-            userSelect: "none",
-            WebkitUserSelect: "none",
-            WebkitTouchCallout: "none",
-            WebkitTapHighlightColor: "transparent",
-          }}
-        >
-          E
-        </button>
-      )}
+        {showInteract && (
+          <button
+            onClick={onInteract}
+            onContextMenu={preventContextMenu}
+            aria-label={dict.touch.interact}
+            className="pixel-font"
+            style={{
+              // Sits in the empty gap at the middle of the d-pad cross.
+              position: "absolute",
+              left: 55,
+              top: 55,
+              width: 58,
+              height: 58,
+              borderRadius: "50%",
+              background: "#ffb84d",
+              color: "#0b0e1a",
+              border: "3px solid #0b0e1a",
+              fontSize: 10,
+              touchAction: "none",
+              userSelect: "none",
+              WebkitUserSelect: "none",
+              WebkitTouchCallout: "none",
+              WebkitTapHighlightColor: "transparent",
+            }}
+          >
+            E
+          </button>
+        )}
+      </div>
     </div>
   );
 }

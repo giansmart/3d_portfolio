@@ -3,7 +3,10 @@ export const WORLD = { w: 2400, h: 1600 };
 export const PLAYER_SIZE = { w: 34, h: 46 };
 export const PLAYER_SPEED = 220; // px/sec
 
-export const SPAWN = { x: 230, y: 1120 };
+// Far enough from the About building that the (visually scaled-up) cat
+// sprite doesn't overlap the house on the very first frame, but still
+// inside its proximity radius so "PRESS E" shows immediately.
+export const SPAWN = { x: 280, y: 1182 };
 
 export const ZONES = [
   {
