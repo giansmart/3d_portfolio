@@ -537,12 +537,15 @@ export function MemeCat({ variant = "walk", walking = false }) {
   const [frame, setFrame] = useState(0);
 
   useEffect(() => {
-    if (variant !== "walk" || !walking) return undefined;
+    if (!walking) return undefined;
     const id = setInterval(() => setFrame((f) => (f + 1) % WALK_FRAMES.length), WALK_FRAME_MS);
     return () => clearInterval(id);
-  }, [variant, walking]);
+  }, [walking]);
 
-  if (variant === "walk") {
+  // A variant photo (station pose, sad/happy obstacle face) only makes sense
+  // while standing still — proximity radii are wide, so without this check
+  // the cat would freeze on that photo for a stretch while still walking.
+  if (walking || variant === "walk") {
     return <MemeCatPhoto src={WALK_FRAMES[walking ? frame : 0]} walking={walking} />;
   }
   if (CAT_PHOTOS[variant]) {
