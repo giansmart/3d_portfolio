@@ -22,6 +22,9 @@ import walk10 from "../memecats/frames/walk-10.png";
 import workerIdle from "../worker/frames/worker-idle.png";
 import workerChat1 from "../worker/frames/worker-chat-1.png";
 import workerChat2 from "../worker/frames/worker-chat-2.png";
+import workerIdleWoman from "../worker/frames/worker-idle-woman.png";
+import workerChat1Woman from "../worker/frames/worker-chat-1-woman.png";
+import workerChat2Woman from "../worker/frames/worker-chat-2-woman.png";
 
 const ACCENT = "#39ff88";
 const IDLE = "#7a8a7a";
@@ -105,19 +108,32 @@ function BuildingIcon({ kind, lit }) {
         </div>
       );
     case "beacon":
+      // An envelope, not a lamppost — this is the contact station. The glow
+      // dot keeps the "lights up once all fragments are found" payoff.
       return (
-        <div style={{ position: "relative", width: 32, height: 60 }} className={lit ? "beacon-lit" : undefined}>
-          <div style={{ position: "absolute", left: 8, top: 10, width: 16, height: 50, background: "#3a3f4d", boxShadow: "0 0 0 2px #0b0e1a" }} />
+        <div style={{ position: "relative", width: 56, height: 52 }} className={lit ? "beacon-lit" : undefined}>
+          <div style={{ position: "absolute", left: 0, top: 12, width: 56, height: 38, background: "#eef1e8", boxShadow: "0 0 0 3px #0b0e1a" }} />
           <div
             style={{
               position: "absolute",
-              left: 6,
-              top: 0,
-              width: 20,
-              height: 12,
+              left: 0,
+              top: 12,
+              width: 56,
+              height: 26,
+              background: "#c7cdbf",
+              clipPath: "polygon(0% 0%, 50% 62%, 100% 0%)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: 24,
+              top: 42,
+              width: 8,
+              height: 8,
               borderRadius: "50%",
               background: "#ffb84d",
-              boxShadow: lit ? "0 0 20px 8px rgba(255,184,77,0.9)" : "0 0 8px 2px rgba(255,184,77,0.6)",
+              boxShadow: lit ? "0 0 16px 6px rgba(255,184,77,0.9)" : "0 0 6px 2px rgba(255,184,77,0.55)",
             }}
           />
         </div>
@@ -204,25 +220,27 @@ export function ObstacleMarker({ x, y, active, resolved, title }) {
 export const PERSON_COLORS = {
   "mark-waldhauser": "#7dd3fc",
   "naresh-kuppusamy": "#a78bfa",
-  "juan-carlos-castillo": "#5eead4",
+  "ariela-carrillo": "#5eead4",
   "christian-rivera": "#f0abfc",
 };
 
-const WORKER_CHAT_FRAMES = [workerChat1, workerChat2];
+const WORKER_CHAT_FRAMES = { male: [workerChat1, workerChat2], female: [workerChat1Woman, workerChat2Woman] };
+const WORKER_IDLE = { male: workerIdle, female: workerIdleWoman };
 const WORKER_CHAT_FRAME_MS = 450;
 
 // Sprite sheet faces right by default; mirrored whenever the cat is
 // approaching from the worker's left, so the NPC always faces the cat.
-function WorkerFigure({ active, facingLeft }) {
+function WorkerFigure({ active, facingLeft, gender = "male" }) {
   const [frame, setFrame] = useState(0);
+  const chatFrames = WORKER_CHAT_FRAMES[gender] || WORKER_CHAT_FRAMES.male;
 
   useEffect(() => {
     if (!active) return undefined;
-    const id = setInterval(() => setFrame((f) => (f + 1) % WORKER_CHAT_FRAMES.length), WORKER_CHAT_FRAME_MS);
+    const id = setInterval(() => setFrame((f) => (f + 1) % chatFrames.length), WORKER_CHAT_FRAME_MS);
     return () => clearInterval(id);
-  }, [active]);
+  }, [active, chatFrames]);
 
-  const src = active ? WORKER_CHAT_FRAMES[frame] : workerIdle;
+  const src = active ? chatFrames[frame] : WORKER_IDLE[gender] || WORKER_IDLE.male;
   return (
     <img
       src={src}
@@ -277,11 +295,11 @@ function Flag({ code }) {
   return null;
 }
 
-export function PersonMarker({ x, y, active, firstName, country, color, facingLeft }) {
+export function PersonMarker({ x, y, active, firstName, country, color, facingLeft, gender }) {
   return (
     <div className="absolute flex flex-col items-center gap-1" style={{ left: x - 34, top: y - 68, width: 68 }}>
       <div style={{ transform: `scale(${BUILDING_SCALE})`, transformOrigin: "50% 100%" }}>
-        <WorkerFigure active={active} facingLeft={facingLeft} />
+        <WorkerFigure active={active} facingLeft={facingLeft} gender={gender} />
       </div>
       <span
         className="pixel-font"

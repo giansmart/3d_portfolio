@@ -312,6 +312,7 @@ export default function World({ onExit }) {
                 country={person.country}
                 color={color}
                 facingLeft={facingLeft}
+                gender={person.gender}
               />
               {isNear && (
                 <DialogueBubble
