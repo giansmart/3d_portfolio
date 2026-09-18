@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import { isTypingTarget } from "./domUtils";
 
 const KEY_MAP = {
   ArrowUp: "up",
@@ -19,12 +20,14 @@ export function useInput() {
 
   useEffect(() => {
     const onKeyDown = (e) => {
+      if (isTypingTarget(e.target)) return;
       const dir = KEY_MAP[e.code];
       if (!dir) return;
       keys.current.add(dir);
       e.preventDefault();
     };
     const onKeyUp = (e) => {
+      if (isTypingTarget(e.target)) return;
       const dir = KEY_MAP[e.code];
       if (dir) keys.current.delete(dir);
     };

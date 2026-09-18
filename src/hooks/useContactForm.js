@@ -32,7 +32,8 @@ export function useContactForm() {
       );
       setStatus("success");
       setForm({ name: "", email: "", message: "" });
-    } catch {
+    } catch (err) {
+      console.error("EmailJS send failed:", err);
       setStatus("error");
     } finally {
       setLoading(false);

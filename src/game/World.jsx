@@ -13,6 +13,7 @@ import {
 } from "./layout";
 import { moveWithCollisions } from "./collision";
 import { withinCorridor } from "./corridor";
+import { isTypingTarget } from "./domUtils";
 import { useGameLoop } from "./useGameLoop";
 import { useInput } from "./useInput";
 import { useFootsteps } from "./useFootsteps";
@@ -114,7 +115,7 @@ export default function World({ onExit }) {
     }
   });
   const { getVector, setTouchVector } = useInput();
-  const { lang, dict } = useLanguage();
+  const { lang } = useLanguage();
 
   // Dialogue bubbles are lightweight — they don't pause the world like the
   // full-screen panels do; you can keep walking, and walking away from the
@@ -237,6 +238,9 @@ export default function World({ onExit }) {
 
   useEffect(() => {
     const onKey = (e) => {
+      // Let the contact form (or any field) type freely — only Escape still
+      // reaches the game, so it can still close the panel you're typing in.
+      if (isTypingTarget(e.target) && e.code !== "Escape") return;
       if (showFinale) {
         if (e.code === "Escape") setShowFinale(false);
         return;
@@ -319,7 +323,6 @@ export default function World({ onExit }) {
                   quote={person.quote}
                   accent={color}
                   linkedin={person.linkedin}
-                  verifyLabel={dict.recommendation.verify}
                 />
               )}
             </Fragment>

@@ -68,9 +68,6 @@ export const translations = {
       success: "Message sent — thank you!",
       error: "Something went wrong — email me directly instead.",
     },
-    recommendation: {
-      verify: "View on LinkedIn ↗",
-    },
     lang: { switchTo: "ES" },
   },
   es: {
@@ -137,9 +134,6 @@ export const translations = {
       sending: "ENVIANDO...",
       success: "Mensaje enviado — ¡gracias!",
       error: "Algo salió mal — mejor escríbeme directamente.",
-    },
-    recommendation: {
-      verify: "Ver en LinkedIn ↗",
     },
     lang: { switchTo: "EN" },
   },
