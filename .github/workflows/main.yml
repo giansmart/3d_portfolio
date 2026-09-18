@@ -22,10 +22,8 @@ jobs:
         with:
           node-version: 18
       
-      - run: npm install -D tailwindcss
-      - run: npm install --legacy-peer-deps -D postcss autoprefixer
-      - run: npm install --legacy-peer-deps @react-three/fiber @react-three/drei maath react-tilt react-vertical-timeline-component @emailjs/browser framer-motion react-router-dom 
-    
+      - run: npm ci
+
       - name: Build Project
         run: |
           npm run build
@@ -44,5 +42,5 @@ jobs:
       
       - name: Copy files artifacts to s3 bucket
         run: |
-          aws s3 sync ./dist s3://${{ vars.AWS_BUCKET_NAME }}
+          aws s3 sync ./dist s3://${{ vars.AWS_BUCKET_NAME }} --delete
         

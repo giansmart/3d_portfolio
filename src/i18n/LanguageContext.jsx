@@ -28,6 +28,7 @@ export function LanguageProvider({ children }) {
   return <LanguageContext.Provider value={{ lang, dict: translations[lang], toggleLang }}>{children}</LanguageContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- hook belongs with its provider
 export function useLanguage() {
   const ctx = useContext(LanguageContext);
   if (!ctx) throw new Error("useLanguage must be used within LanguageProvider");
@@ -36,6 +37,7 @@ export function useLanguage() {
 
 // Picks the current-language variant of a { en: {...}, es: {...} } content
 // entry (fragments/obstacles), falling back to English.
+// eslint-disable-next-line react-refresh/only-export-components -- plain helper, not a component
 export function pickLang(entry, lang) {
   return entry[lang] || entry.en;
 }

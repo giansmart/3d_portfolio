@@ -200,6 +200,7 @@ export function ObstacleMarker({ x, y, active, resolved, title }) {
 // default; alternates between two talking frames while a dialogue is open.
 // Each person still gets their own PERSON_COLORS accent for the marker ring,
 // name label and speech bubble.
+// eslint-disable-next-line react-refresh/only-export-components -- plain data map, not a component
 export const PERSON_COLORS = {
   "mark-waldhauser": "#7dd3fc",
   "naresh-kuppusamy": "#a78bfa",
