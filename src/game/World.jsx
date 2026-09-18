@@ -12,6 +12,7 @@ import {
   RECOMMENDATION_SPOTS,
 } from "./layout";
 import { moveWithCollisions } from "./collision";
+import { withinCorridor } from "./corridor";
 import { useGameLoop } from "./useGameLoop";
 import { useInput } from "./useInput";
 import { useFootsteps } from "./useFootsteps";
@@ -177,7 +178,7 @@ export default function World({ onExit }) {
     if (scrollOffset !== 0) setScrollOffset(0);
 
     const delta = { x: v.x * PLAYER_SPEED * dt, y: v.y * PLAYER_SPEED * dt };
-    const next = moveWithCollisions(posRef.current, PLAYER_SIZE, delta, SOLIDS, BOUNDS);
+    const next = moveWithCollisions(posRef.current, PLAYER_SIZE, delta, SOLIDS, BOUNDS, withinCorridor);
     posRef.current = next;
     setRenderPos(next);
 

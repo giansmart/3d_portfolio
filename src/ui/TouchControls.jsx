@@ -20,7 +20,14 @@ const btnStyle = {
   justifyContent: "center",
   touchAction: "none",
   userSelect: "none",
+  WebkitUserSelect: "none",
+  // Stops iOS's long-press callout (copy/look up/translate) from popping up
+  // when a direction is held down.
+  WebkitTouchCallout: "none",
+  WebkitTapHighlightColor: "transparent",
 };
+
+const preventContextMenu = (e) => e.preventDefault();
 
 export default function TouchControls({ onMove, onInteract, showInteract }) {
   const { dict } = useLanguage();
@@ -54,6 +61,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           onPointerDown={press("up")}
           onPointerUp={release("up")}
           onPointerLeave={release("up")}
+          onContextMenu={preventContextMenu}
           aria-label={dict.touch.up}
         >
           &#9650;
@@ -63,6 +71,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           onPointerDown={press("down")}
           onPointerUp={release("down")}
           onPointerLeave={release("down")}
+          onContextMenu={preventContextMenu}
           aria-label={dict.touch.down}
         >
           &#9660;
@@ -72,6 +81,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           onPointerDown={press("left")}
           onPointerUp={release("left")}
           onPointerLeave={release("left")}
+          onContextMenu={preventContextMenu}
           aria-label={dict.touch.left}
         >
           &#9664;
@@ -81,6 +91,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           onPointerDown={press("right")}
           onPointerUp={release("right")}
           onPointerLeave={release("right")}
+          onContextMenu={preventContextMenu}
           aria-label={dict.touch.right}
         >
           &#9654;
@@ -90,6 +101,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
       {showInteract && (
         <button
           onClick={onInteract}
+          onContextMenu={preventContextMenu}
           aria-label={dict.touch.interact}
           className="fixed right-6 bottom-10 z-20 pixel-font"
           style={{
@@ -100,6 +112,11 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
             color: "#0b0e1a",
             border: "3px solid #0b0e1a",
             fontSize: 10,
+            touchAction: "none",
+            userSelect: "none",
+            WebkitUserSelect: "none",
+            WebkitTouchCallout: "none",
+            WebkitTapHighlightColor: "transparent",
           }}
         >
           E

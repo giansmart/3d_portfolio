@@ -13,16 +13,21 @@ function clamp(v, min, max) {
 
 // Moves `pos` by `delta`, resolving one axis at a time so sliding along a
 // wall feels natural instead of stopping dead on diagonal collisions.
-export function moveWithCollisions(pos, size, delta, solids, bounds) {
+// `corridorOk`, if given, additionally gates each axis on the player's
+// center point staying within the walkable leash around the river path.
+export function moveWithCollisions(pos, size, delta, solids, bounds, corridorOk) {
   let { x, y } = pos;
+  const half = { x: size.w / 2, y: size.h / 2 };
 
   const tryX = clamp(x + delta.x, bounds.minX, bounds.maxX - size.w);
   const boxX = { x: tryX, y, w: size.w, h: size.h };
-  if (!solids.some((s) => rectsOverlap(boxX, s))) x = tryX;
+  const centerX = { x: tryX + half.x, y: y + half.y };
+  if (!solids.some((s) => rectsOverlap(boxX, s)) && (!corridorOk || corridorOk(centerX))) x = tryX;
 
   const tryY = clamp(y + delta.y, bounds.minY, bounds.maxY - size.h);
   const boxY = { x, y: tryY, w: size.w, h: size.h };
-  if (!solids.some((s) => rectsOverlap(boxY, s))) y = tryY;
+  const centerY = { x: x + half.x, y: tryY + half.y };
+  if (!solids.some((s) => rectsOverlap(boxY, s)) && (!corridorOk || corridorOk(centerY))) y = tryY;
 
   return { x, y };
 }
