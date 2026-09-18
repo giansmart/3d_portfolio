@@ -94,7 +94,6 @@ export default function World({ onExit }) {
   const nearPersonIdRef = useRef(null);
   const [openZoneId, setOpenZoneId] = useState(null);
   const [openObstacleId, setOpenObstacleId] = useState(null);
-  const [openPersonId, setOpenPersonId] = useState(null);
   const [isMoving, setIsMoving] = useState(false);
   const movingRef = useRef(false);
   const [collected, setCollected] = useState(() => new Set());
@@ -192,9 +191,6 @@ export default function World({ onExit }) {
     const closestPerson = findNearestPerson(center);
     nearPersonIdRef.current = closestPerson;
     setNearPersonId(closestPerson);
-    if (openPersonId && closestPerson !== openPersonId) {
-      setOpenPersonId(null);
-    }
 
     if (collected.size < FRAGMENT_SPOTS.length) {
       for (const spot of FRAGMENT_SPOTS) {
@@ -231,9 +227,9 @@ export default function World({ onExit }) {
       setOpenObstacleId(nearObstacleIdRef.current);
     } else if (nearZoneIdRef.current) {
       setOpenZoneId(nearZoneIdRef.current);
-    } else if (nearPersonIdRef.current) {
-      setOpenPersonId((prev) => (prev === nearPersonIdRef.current ? null : nearPersonIdRef.current));
     }
+    // People talk automatically on approach — see DialogueBubble below, tied
+    // straight to nearPersonId, no key press needed.
   }, []);
 
   useEffect(() => {
@@ -247,11 +243,7 @@ export default function World({ onExit }) {
         return;
       }
       if (openObstacleId) {
-        if (e.code === "Escape") setOpenObstacleId(null);
-        return;
-      }
-      if (openPersonId && e.code === "Escape") {
-        setOpenPersonId(null);
+        if (e.code === "Escape" || e.code === "Enter") setOpenObstacleId(null);
         return;
       }
       if (openZoneId) {
@@ -266,7 +258,7 @@ export default function World({ onExit }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [interact, openZoneId, openObstacleId, openPersonId, showJournal, showFinale]);
+  }, [interact, openZoneId, openObstacleId, showJournal, showFinale]);
 
   const camX = clampCam(renderPos.x + PLAYER_SIZE.w / 2 - viewport.w / 2, WORLD.w, viewport.w);
   const camY = clampCam(renderPos.y + PLAYER_SIZE.h / 2 - viewport.h / 2 + scrollOffset, WORLD.h, viewport.h);
@@ -274,12 +266,7 @@ export default function World({ onExit }) {
   const nearZone = ZONES.find((z) => z.id === nearZoneId) || null;
   const allFound = collected.size === FRAGMENT_SPOTS.length;
 
-  const nearPerson = recommendations.find((r) => r.id === nearPersonId) || null;
-  const promptLabel = nearObstacleId
-    ? obstacles[nearObstacleId].title
-    : nearZone
-      ? nearZone.label.toUpperCase()
-      : nearPerson?.firstName.toUpperCase();
+  const promptLabel = nearObstacleId ? obstacles[nearObstacleId].title : nearZone?.label.toUpperCase();
   const catVariant = nearObstacleId ? (resolvedObstacles.has(nearObstacleId) ? "happy" : "sad") : nearZoneId || "walk";
 
   return (
@@ -306,11 +293,29 @@ export default function World({ onExit }) {
         {RECOMMENDATION_SPOTS.map((spot) => {
           const person = recommendations.find((r) => r.id === spot.id);
           const color = PERSON_COLORS[spot.id];
+          const isNear = spot.id === nearPersonId;
+          const facingLeft = renderPos.x + PLAYER_SIZE.w / 2 < spot.x;
           return (
             <Fragment key={spot.id}>
-              <PersonMarker x={spot.x} y={spot.y} active={spot.id === nearPersonId} firstName={person.firstName} color={color} />
-              {openPersonId === spot.id && (
-                <DialogueBubble x={spot.x} y={spot.y} name={person.firstName} quote={person.quote} accent={color} />
+              <PersonMarker
+                x={spot.x}
+                y={spot.y}
+                active={isNear}
+                firstName={person.firstName}
+                country={person.country}
+                color={color}
+                facingLeft={facingLeft}
+              />
+              {isNear && (
+                <DialogueBubble
+                  x={spot.x}
+                  y={spot.y}
+                  name={person.firstName}
+                  company={person.company}
+                  country={person.country}
+                  quote={person.quote}
+                  accent={color}
+                />
               )}
             </Fragment>
           );

@@ -19,6 +19,9 @@ import walk07 from "../memecats/frames/walk-07.png";
 import walk08 from "../memecats/frames/walk-08.png";
 import walk09 from "../memecats/frames/walk-09.png";
 import walk10 from "../memecats/frames/walk-10.png";
+import workerIdle from "../worker/frames/worker-idle.png";
+import workerChat1 from "../worker/frames/worker-chat-1.png";
+import workerChat2 from "../worker/frames/worker-chat-2.png";
 
 const ACCENT = "#39ff88";
 const IDLE = "#7a8a7a";
@@ -192,9 +195,11 @@ export function ObstacleMarker({ x, y, active, resolved, title }) {
   );
 }
 
-// Minimalist "Roblox-ish" NPC: blocky head + torso + limbs, one flat accent
-// color per person, no facial detail beyond two dot eyes. Recolorable via
-// PERSON_COLORS below instead of a real photo.
+// One recolor-free "office worker" sprite (real pixel art) used for every
+// recommendation NPC — kept generic on purpose, no real photos. Idle by
+// default; alternates between two talking frames while a dialogue is open.
+// Each person still gets their own PERSON_COLORS accent for the marker ring,
+// name label and speech bubble.
 export const PERSON_COLORS = {
   "mark-waldhauser": "#7dd3fc",
   "naresh-kuppusamy": "#a78bfa",
@@ -202,41 +207,98 @@ export const PERSON_COLORS = {
   "christian-rivera": "#f0abfc",
 };
 
-function PersonFigure({ color, active }) {
+const WORKER_CHAT_FRAMES = [workerChat1, workerChat2];
+const WORKER_CHAT_FRAME_MS = 450;
+
+// Sprite sheet faces right by default; mirrored whenever the cat is
+// approaching from the worker's left, so the NPC always faces the cat.
+function WorkerFigure({ active, facingLeft }) {
+  const [frame, setFrame] = useState(0);
+
+  useEffect(() => {
+    if (!active) return undefined;
+    const id = setInterval(() => setFrame((f) => (f + 1) % WORKER_CHAT_FRAMES.length), WORKER_CHAT_FRAME_MS);
+    return () => clearInterval(id);
+  }, [active]);
+
+  const src = active ? WORKER_CHAT_FRAMES[frame] : workerIdle;
   return (
-    <div style={{ position: "relative", width: 34, height: 50, filter: active ? "brightness(1.2)" : "none" }}>
-      <div style={{ position: "absolute", left: 9, top: 0, width: 16, height: 14, borderRadius: 3, background: "#f2d9b8", boxShadow: "0 0 0 2px #0b0e1a" }}>
-        <div style={{ position: "absolute", left: 4, top: 6, width: 2, height: 2, borderRadius: "50%", background: "#0b0e1a" }} />
-        <div style={{ position: "absolute", left: 10, top: 6, width: 2, height: 2, borderRadius: "50%", background: "#0b0e1a" }} />
-      </div>
-      <div style={{ position: "absolute", left: 6, top: 15, width: 22, height: 20, borderRadius: 3, background: color, boxShadow: "0 0 0 2px #0b0e1a" }} />
-      <div style={{ position: "absolute", left: 1, top: 16, width: 6, height: 16, borderRadius: 2, background: color, boxShadow: "0 0 0 2px #0b0e1a" }} />
-      <div style={{ position: "absolute", left: 27, top: 16, width: 6, height: 16, borderRadius: 2, background: color, boxShadow: "0 0 0 2px #0b0e1a" }} />
-      <div style={{ position: "absolute", left: 8, top: 35, width: 8, height: 15, borderRadius: 2, background: "#2b2d33", boxShadow: "0 0 0 2px #0b0e1a" }} />
-      <div style={{ position: "absolute", left: 18, top: 35, width: 8, height: 15, borderRadius: 2, background: "#2b2d33", boxShadow: "0 0 0 2px #0b0e1a" }} />
-    </div>
+    <img
+      src={src}
+      alt=""
+      draggable={false}
+      style={{
+        width: 40,
+        height: "auto",
+        display: "block",
+        userSelect: "none",
+        pointerEvents: "none",
+        transform: facingLeft ? "scaleX(-1)" : "none",
+      }}
+    />
   );
 }
 
-export function PersonMarker({ x, y, active, firstName, color }) {
+// Small flat-color flag icons, drawn in-line — no font/emoji rendering
+// inconsistencies across OS, no extra asset or dependency.
+function Flag({ code }) {
+  const common = { width: 20, height: 14, style: { boxShadow: "0 0 0 1px rgba(0,0,0,0.5)", display: "block" } };
+  if (code === "US") {
+    return (
+      <svg viewBox="0 0 20 14" {...common}>
+        <rect width="20" height="14" fill="#b22234" />
+        {[1.08, 3.23, 5.38, 7.54, 9.69, 11.85].map((y) => (
+          <rect key={y} y={y} width="20" height="1.08" fill="#fff" />
+        ))}
+        <rect width="8" height="7.54" fill="#3c3b6e" />
+      </svg>
+    );
+  }
+  if (code === "IN") {
+    return (
+      <svg viewBox="0 0 20 14" {...common}>
+        <rect width="20" height="4.67" fill="#ff9933" />
+        <rect y="4.67" width="20" height="4.67" fill="#fff" />
+        <rect y="9.33" width="20" height="4.67" fill="#138808" />
+        <circle cx="10" cy="7" r="1.5" fill="none" stroke="#000080" strokeWidth="0.3" />
+      </svg>
+    );
+  }
+  if (code === "PE") {
+    return (
+      <svg viewBox="0 0 20 14" {...common}>
+        <rect width="20" height="14" fill="#fff" />
+        <rect width="6.67" height="14" fill="#d91023" />
+        <rect x="13.33" width="6.67" height="14" fill="#d91023" />
+      </svg>
+    );
+  }
+  return null;
+}
+
+export function PersonMarker({ x, y, active, firstName, country, color, facingLeft }) {
   return (
-    <div className="absolute flex flex-col items-center gap-2" style={{ left: x - 30, top: y - 62, width: 60 }}>
+    <div className="absolute flex flex-col items-center gap-1" style={{ left: x - 34, top: y - 68, width: 68 }}>
       <div style={{ transform: `scale(${BUILDING_SCALE})`, transformOrigin: "50% 100%" }}>
-        <PersonFigure color={color} active={active} />
+        <WorkerFigure active={active} facingLeft={facingLeft} />
       </div>
-      <span className="pixel-font" style={{ fontSize: 11, color: active ? color : "#eef1e8", letterSpacing: 1, textAlign: "center" }}>
+      <span
+        className="pixel-font"
+        style={{ fontSize: 11, color: active ? color : "#eef1e8", letterSpacing: 1, textAlign: "center", display: "flex", alignItems: "center", gap: 6 }}
+      >
+        {country && <Flag code={country} />}
         {firstName.toUpperCase()}
       </span>
     </div>
   );
 }
 
-// In-world speech bubble — anchored just above the NPC's head via
-// translateY(-100%), so it grows upward as the quote gets longer instead of
-// drifting down into the character.
-export function DialogueBubble({ x, y, name, quote, accent }) {
+// In-world speech bubble — anchored well above the NPC's (and cat's) heads
+// via translateY(-100%) from a high offset, so it never overlaps either
+// character; grows upward as the quote gets longer.
+export function DialogueBubble({ x, y, name, company, country, quote, accent }) {
   return (
-    <div className="absolute" style={{ left: x - 160, top: y - 46, width: 320, zIndex: 5 }}>
+    <div className="absolute" style={{ left: x - 160, top: y - 120, width: 320, zIndex: 5 }}>
       <div style={{ position: "relative", transform: "translateY(-100%)" }}>
         <div
           style={{
@@ -248,9 +310,15 @@ export function DialogueBubble({ x, y, name, quote, accent }) {
             boxShadow: "6px 6px 0 rgba(0,0,0,0.45)",
           }}
         >
-          <div className="pixel-font" style={{ fontSize: 10, color: accent, marginBottom: 8 }}>
+          <div className="pixel-font" style={{ fontSize: 10, color: accent, marginBottom: 4, display: "flex", alignItems: "center", gap: 8 }}>
+            {country && <Flag code={country} />}
             {name.toUpperCase()}
           </div>
+          {company && (
+            <div className="mono-font" style={{ fontSize: 10, color: "#9aa39a", marginBottom: 8 }}>
+              {company}
+            </div>
+          )}
           <p className="mono-font" style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "#eef1e8" }}>
             &#8220;{quote}&#8221;
           </p>
