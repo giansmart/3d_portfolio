@@ -1,26 +1,16 @@
-import { BrowserRouter } from "react-router-dom";
-import { About, Contact, Experience, Feedbacks, Hero, Navbar, Tech, Works, StarsCanvas } from "./components";
+import { useState } from "react";
+import TitleScreen from "./ui/TitleScreen";
+import World from "./game/World";
+import { LanguageProvider } from "./i18n/LanguageContext";
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <div className="relative z-0 bg-primary">
-        <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
-          <Navbar/>
-          <Hero />
-        </div>
-        <About />
-        <Experience />
-        <Tech />
-        {/*<Works />*/}
-        <Feedbacks />
-        <div className="relative z-0">
-          <Contact />
-          <StarsCanvas />
-        </div>
-      </div>
-    </BrowserRouter>
-  )
-}
+  const [started, setStarted] = useState(false);
 
-export default App
+  return (
+    <LanguageProvider>
+      {started ? <World onExit={() => setStarted(false)} /> : <TitleScreen onStart={() => setStarted(true)} />}
+    </LanguageProvider>
+  );
+};
+
+export default App;
