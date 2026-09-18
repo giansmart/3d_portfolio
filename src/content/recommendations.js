@@ -35,7 +35,8 @@ export const recommendations = [
     company: "HatchworksAI",
     country: "CR",
     linkedin: "https://www.linkedin.com/in/arielacarrillo/",
-    quote: "He is an awesome partner! Very smart an creative. We troubleshoot many issues togehter.",
+    quote:
+      "I had the pleasure of working with Giancarlo at HatchWorks. His passion and dedication to Machine Learning truly stand out and are something everyone who works with him quickly recognizes...",
   },
   {
     id: "christian-rivera",
