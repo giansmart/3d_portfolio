@@ -1,7 +1,9 @@
 // This file is the ONLY place that knows how the world looks. Everything in
 // game/*.js is skin-agnostic (positions, collision, input) so this can be
 // swapped for a real pixel-art tileset later without touching game logic.
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
+import { WORLD } from "../layout";
+import { withinCorridor } from "../corridor";
 import station1 from "../memecats/memecat-station1.png";
 import station2 from "../memecats/memecat-station2.png";
 import station3 from "../memecats/memecat-station3.png";
@@ -34,39 +36,345 @@ export function Ground() {
     <div
       className="absolute inset-0"
       style={{
-        backgroundColor: "#152a1c",
-        backgroundImage:
-          "repeating-linear-gradient(0deg, #152a1c 0px, #152a1c 32px, #1b3423 32px, #1b3423 64px), repeating-linear-gradient(90deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 2px, transparent 2px, transparent 64px)",
+        backgroundColor: "#33502e",
+        // Layered lighting instead of a flat fill: big cool/warm regional
+        // tints for uneven "dappled sunlight" feel, medium moss clumps for
+        // mid-range color variety, and a fine diagonal grain so no patch of
+        // ground reads as a single flat color.
+        backgroundImage: [
+          "radial-gradient(circle at 15% 22%, rgba(255,241,181,0.07), transparent 32%)",
+          "radial-gradient(circle at 78% 12%, rgba(0,12,6,0.22), transparent 34%)",
+          "radial-gradient(circle at 58% 55%, rgba(255,241,181,0.06), transparent 30%)",
+          "radial-gradient(circle at 22% 78%, rgba(0,12,6,0.2), transparent 34%)",
+          "radial-gradient(circle at 85% 82%, rgba(255,241,181,0.07), transparent 30%)",
+          "radial-gradient(circle at 40% 92%, rgba(0,12,6,0.18), transparent 32%)",
+          "radial-gradient(circle at 8% 55%, rgba(0,12,6,0.15), transparent 28%)",
+          "radial-gradient(circle at 92% 45%, rgba(255,241,181,0.05), transparent 26%)",
+          "radial-gradient(circle at 34% 40%, rgba(94,138,68,0.4), transparent 11%)",
+          "radial-gradient(circle at 66% 30%, rgba(41,74,38,0.4), transparent 9%)",
+          "radial-gradient(circle at 48% 68%, rgba(94,138,68,0.35), transparent 10%)",
+          "radial-gradient(circle at 20% 60%, rgba(41,74,38,0.35), transparent 9%)",
+          "radial-gradient(circle at 80% 65%, rgba(94,138,68,0.3), transparent 10%)",
+          "radial-gradient(circle at 6% 12%, rgba(41,74,38,0.3), transparent 9%)",
+          "repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 3px)",
+        ].join(", "),
+        backgroundSize:
+          "100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 6px 6px",
+        backgroundRepeat:
+          "no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat",
       }}
     />
   );
 }
 
+// Deterministic background forest: pixel-art conifers, oaks, birches,
+// bushes, rocks and flower clusters scattered outside the walkable corridor
+// (game/corridor.js) so the river/path reads as a clearing cut through real
+// woods — using the same coordinates the game already gates movement with,
+// so decoration can never cover the path, a station, an NPC or the cat.
+// Every piece gets its own small continuous color/rotation jitter (HSL, not
+// a fixed palette swap) so no two trees on the map are identical. Positions
+// and colors are computed once at module load (small integer hash, no
+// Math.random) so nothing shifts between renders or reloads.
+function seededRandom(seed) {
+  let t = seed + 0x6d2b79f5;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}
+
+function jitter(seed, salt, range) {
+  return (seededRandom(seed * 97 + salt * 17) - 0.5) * 2 * range;
+}
+
+function hslToHex(h, s, l) {
+  const hue = ((h % 360) + 360) % 360;
+  const sat = Math.min(100, Math.max(0, s)) / 100;
+  const light = Math.min(100, Math.max(0, l)) / 100;
+  const k = (n) => (n + hue / 30) % 12;
+  const a = sat * Math.min(light, 1 - light);
+  const f = (n) => light - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  const toHex = (x) => Math.round(255 * x).toString(16).padStart(2, "0");
+  return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+}
+
+function PineTree({ seed }) {
+  const hue = 140 + jitter(seed, 1, 10);
+  const sat = 37 + jitter(seed, 2, 6);
+  const light = hslToHex(hue, sat, 29 + jitter(seed, 3, 3));
+  const mid = hslToHex(hue, sat, 23 + jitter(seed, 4, 3));
+  const dark = hslToHex(hue, sat, 17 + jitter(seed, 5, 3));
+  const trunk = hslToHex(27 + jitter(seed, 6, 6), 42 + jitter(seed, 7, 8), 21 + jitter(seed, 8, 4));
+  return (
+    <svg width="34" height="70" viewBox="0 0 34 70" style={{ overflow: "visible" }}>
+      <ellipse cx="17" cy="66" rx="13" ry="4" fill="rgba(0,0,0,0.25)" />
+      <rect x="14" y="50" width="6" height="14" fill={trunk} />
+      <polygon points="17,4 30,26 4,26" fill={dark} stroke="#0b0e1a" strokeWidth="1.5" strokeLinejoin="round" />
+      <polygon points="17,16 28,36 6,36" fill={mid} stroke="#0b0e1a" strokeWidth="1.5" strokeLinejoin="round" />
+      <polygon points="17,28 26,48 8,48" fill={light} stroke="#0b0e1a" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function OakTree({ seed }) {
+  const hue = 114 + jitter(seed, 1, 14);
+  const sat = 36 + jitter(seed, 2, 8);
+  const dark = hslToHex(hue, sat, 26 + jitter(seed, 3, 4));
+  const mid = hslToHex(hue, sat, 33 + jitter(seed, 4, 4));
+  const light = hslToHex(hue + 6, sat - 4, 55 + jitter(seed, 5, 5));
+  const trunk = hslToHex(26 + jitter(seed, 6, 6), 40 + jitter(seed, 7, 8), 23 + jitter(seed, 8, 4));
+  return (
+    <svg width="44" height="60" viewBox="0 0 44 60" style={{ overflow: "visible" }}>
+      <ellipse cx="22" cy="56" rx="15" ry="4.5" fill="rgba(0,0,0,0.25)" />
+      <rect x="19" y="36" width="6" height="16" fill={trunk} />
+      <ellipse cx="14" cy="24" rx="14" ry="12" fill={dark} stroke="#0b0e1a" strokeWidth="1.5" />
+      <ellipse cx="30" cy="24" rx="14" ry="12" fill={dark} stroke="#0b0e1a" strokeWidth="1.5" />
+      <ellipse cx="22" cy="14" rx="16" ry="14" fill={mid} stroke="#0b0e1a" strokeWidth="1.5" />
+      <ellipse cx="17" cy="9" rx="7" ry="6" fill={light} opacity="0.7" />
+    </svg>
+  );
+}
+
+function BirchTree({ seed }) {
+  const hue = 92 + jitter(seed, 1, 10);
+  const sat = 34 + jitter(seed, 2, 6);
+  const dark = hslToHex(hue, sat, 26 + jitter(seed, 3, 3));
+  const mid = hslToHex(hue, sat, 35 + jitter(seed, 4, 3));
+  const trunk = hslToHex(40 + jitter(seed, 5, 8), 16 + jitter(seed, 6, 6), 82 + jitter(seed, 7, 5));
+  return (
+    <svg width="26" height="72" viewBox="0 0 26 72" style={{ overflow: "visible" }}>
+      <ellipse cx="13" cy="68" rx="9" ry="3.5" fill="rgba(0,0,0,0.22)" />
+      <rect x="10" y="30" width="6" height="38" fill={trunk} stroke="#0b0e1a" strokeWidth="1.2" />
+      <rect x="10" y="38" width="6" height="3" fill="#0b0e1a" opacity="0.5" />
+      <rect x="10" y="50" width="6" height="3" fill="#0b0e1a" opacity="0.5" />
+      <rect x="10" y="60" width="6" height="3" fill="#0b0e1a" opacity="0.5" />
+      <ellipse cx="6" cy="20" rx="10" ry="9" fill={dark} stroke="#0b0e1a" strokeWidth="1.4" />
+      <ellipse cx="20" cy="18" rx="10" ry="9" fill={dark} stroke="#0b0e1a" strokeWidth="1.4" />
+      <ellipse cx="13" cy="10" rx="11" ry="10" fill={mid} stroke="#0b0e1a" strokeWidth="1.4" />
+    </svg>
+  );
+}
+
+function Bush({ seed }) {
+  const hue = 122 + jitter(seed, 1, 12);
+  const sat = 32 + jitter(seed, 2, 8);
+  const dark = hslToHex(hue, sat, 25 + jitter(seed, 3, 3));
+  const mid = hslToHex(hue, sat, 32 + jitter(seed, 4, 3));
+  return (
+    <svg width="30" height="22" viewBox="0 0 30 22" style={{ overflow: "visible" }}>
+      <ellipse cx="15" cy="19" rx="13" ry="3" fill="rgba(0,0,0,0.2)" />
+      <ellipse cx="8" cy="13" rx="8" ry="7" fill={dark} stroke="#0b0e1a" strokeWidth="1.3" />
+      <ellipse cx="21" cy="13" rx="9" ry="7" fill={dark} stroke="#0b0e1a" strokeWidth="1.3" />
+      <ellipse cx="14" cy="8" rx="10" ry="8" fill={mid} stroke="#0b0e1a" strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+const ROCK_SHAPES = ["2,15 1,8 6,3 14,2 20,6 21,13 16,16 6,16", "1,13 3,5 10,1 18,3 21,10 17,15 9,16 3,15"];
+
+function Rock({ seed }) {
+  const grey = hslToHex(206 + jitter(seed, 1, 10), 6 + jitter(seed, 2, 5), 46 + jitter(seed, 3, 8));
+  const highlight = hslToHex(206, 8, 66 + jitter(seed, 4, 6));
+  const shape = ROCK_SHAPES[Math.floor(seededRandom(seed * 41 + 3) * ROCK_SHAPES.length)];
+  return (
+    <svg width="22" height="18" viewBox="0 0 22 18" style={{ overflow: "visible" }}>
+      <ellipse cx="11" cy="16.5" rx="9" ry="2.2" fill="rgba(0,0,0,0.22)" />
+      <polygon points={shape} fill={grey} stroke="#0b0e1a" strokeWidth="1.3" strokeLinejoin="round" />
+      <polygon points="6,3 14,2 12,7 6,8" fill={highlight} opacity="0.5" />
+    </svg>
+  );
+}
+
+const FLOWER_COLORS = ["#f4f1e2", "#f6d78c", "#f2a9c4"];
+
+function FlowerCluster({ seed }) {
+  const color = FLOWER_COLORS[Math.floor(seededRandom(seed * 53 + 6) * FLOWER_COLORS.length)];
+  return (
+    <svg width="16" height="12" viewBox="0 0 16 12" style={{ overflow: "visible" }}>
+      <circle cx="3" cy="8" r="2.1" fill={color} stroke="#0b0e1a" strokeWidth="0.8" />
+      <circle cx="8" cy="4" r="2.1" fill={color} stroke="#0b0e1a" strokeWidth="0.8" />
+      <circle cx="13" cy="9" r="2.1" fill={color} stroke="#0b0e1a" strokeWidth="0.8" />
+    </svg>
+  );
+}
+
+function ForestPiece({ kind, seed }) {
+  switch (kind) {
+    case "pine":
+      return <PineTree seed={seed} />;
+    case "oak":
+      return <OakTree seed={seed} />;
+    case "birch":
+      return <BirchTree seed={seed} />;
+    case "bush":
+      return <Bush seed={seed} />;
+    case "rock":
+      return <Rock seed={seed} />;
+    case "flower":
+      return <FlowerCluster seed={seed} />;
+    default:
+      return null;
+  }
+}
+
+function buildForestLayer({ cell, margin, anchorSeed, rotationRange, pick }) {
+  const pieces = [];
+  const cols = Math.ceil(WORLD.w / cell);
+  const rows = Math.ceil(WORLD.h / cell);
+  let seed = anchorSeed;
+  for (let gy = 0; gy < rows; gy++) {
+    for (let gx = 0; gx < cols; gx++) {
+      seed += 1;
+      const jitterX = (seededRandom(seed) - 0.5) * cell * 0.85;
+      const jitterY = (seededRandom(seed * 7 + 3) - 0.5) * cell * 0.85;
+      const x = gx * cell + cell / 2 + jitterX;
+      const y = gy * cell + cell / 2 + jitterY;
+      if (x < 10 || x > WORLD.w - 10 || y < 10 || y > WORLD.h - 10) continue;
+      if (withinCorridor({ x, y }, margin)) continue;
+      const scale = 0.8 + seededRandom(seed * 13 + 5) * 0.5;
+      const rotate = jitter(seed, 21, rotationRange);
+      const kind = pick(seed);
+      pieces.push({ id: `${anchorSeed}-${gx}-${gy}`, x, y, scale, rotate, kind, seed });
+    }
+  }
+  return pieces;
+}
+
+const BACKGROUND_FOREST = [
+  // canopy layer: bigger, further from the path — mixed pines/oaks/birches
+  ...buildForestLayer({
+    cell: 150,
+    margin: 90,
+    anchorSeed: 1,
+    rotationRange: 4,
+    pick: (seed) => {
+      const roll = seededRandom(seed * 3 + 2);
+      if (roll < 0.4) return "pine";
+      if (roll < 0.82) return "oak";
+      return "birch";
+    },
+  }),
+  // underbrush layer: smaller, hugs closer to the clearing edge
+  ...buildForestLayer({
+    cell: 100,
+    margin: 40,
+    anchorSeed: 9001,
+    rotationRange: 6,
+    pick: (seed) => {
+      const roll = seededRandom(seed * 5 + 4);
+      if (roll < 0.45) return "bush";
+      if (roll < 0.75) return "rock";
+      return "flower";
+    },
+  }),
+];
+
+export const BackgroundForest = memo(function BackgroundForest() {
+  return (
+    <>
+      {BACKGROUND_FOREST.map((p) => (
+        <div
+          key={p.id}
+          className="absolute"
+          style={{ left: p.x - 22, top: p.y - 54, transform: `rotate(${p.rotate}deg) scale(${p.scale})`, transformOrigin: "50% 100%" }}
+        >
+          <ForestPiece kind={p.kind} seed={p.seed} />
+        </div>
+      ))}
+    </>
+  );
+});
+
+// A paved road, not a river — dark asphalt with a grain texture (an SVG
+// pattern used as the stroke's paint, so the speckle follows the curve
+// instead of tiling flat) and the dashed center line reused as lane
+// markings. Same layering technique as everything else here: dark edge ->
+// flat fill -> texture overlay -> crisp line on top.
 export function River({ width, height }) {
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="absolute inset-0" style={{ width, height }}>
       <defs>
-        <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#12395c" />
-          <stop offset="100%" stopColor="#1a5276" />
+        <linearGradient id="pathGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#302f36" />
+          <stop offset="100%" stopColor="#3c3b44" />
         </linearGradient>
+        <pattern id="asphaltGrain" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+          <rect x="1" y="1" width="1.6" height="1.6" fill="rgba(255,255,255,0.06)" />
+          <rect x="4.5" y="2.5" width="1.3" height="1.3" fill="rgba(0,0,0,0.22)" />
+          <rect x="2.5" y="5" width="1.2" height="1.2" fill="rgba(0,0,0,0.16)" />
+          <rect x="5.5" y="5.5" width="1" height="1" fill="rgba(255,255,255,0.04)" />
+        </pattern>
       </defs>
       <path
         d="M 180 1225 C 500 1050, 550 500, 815 400 C 1050 320, 1150 700, 1535 750 C 1750 780, 1780 450, 1955 380 C 2080 340, 2150 700, 2185 950"
         fill="none"
-        stroke="url(#riverGrad)"
+        stroke="#15151a"
+        strokeWidth="76"
+        strokeLinecap="round"
+      />
+      <path
+        d="M 180 1225 C 500 1050, 550 500, 815 400 C 1050 320, 1150 700, 1535 750 C 1750 780, 1780 450, 1955 380 C 2080 340, 2150 700, 2185 950"
+        fill="none"
+        stroke="url(#pathGrad)"
         strokeWidth="66"
         strokeLinecap="round"
       />
       <path
         d="M 180 1225 C 500 1050, 550 500, 815 400 C 1050 320, 1150 700, 1535 750 C 1750 780, 1780 450, 1955 380 C 2080 340, 2150 700, 2185 950"
         fill="none"
-        stroke="#5ec8e0"
-        strokeWidth="8"
-        strokeDasharray="4 26"
+        stroke="url(#asphaltGrain)"
+        strokeWidth="66"
         strokeLinecap="round"
-        opacity="0.75"
       />
+      <path
+        d="M 180 1225 C 500 1050, 550 500, 815 400 C 1050 320, 1150 700, 1535 750 C 1750 780, 1780 450, 1955 380 C 2080 340, 2150 700, 2185 950"
+        fill="none"
+        stroke="#e9e4d6"
+        strokeWidth="6"
+        strokeDasharray="18 22"
+        strokeLinecap="round"
+        opacity="0.8"
+      />
+    </svg>
+  );
+}
+
+// A cozy cottage, not a flat green box — faceted wall/roof shading (same
+// light/mid/dark technique as the trees and the obstacle sign) plus a
+// chimney and a window so it reads as a home, not a generic hut.
+function HouseIcon() {
+  return (
+    <svg width="56" height="52" viewBox="0 0 56 52" style={{ overflow: "visible" }}>
+      <rect x="37" y="2" width="8" height="15" fill="#6b4a3a" stroke="#0b0e1a" strokeWidth="1.5" />
+      <polygon points="28,2 54,23 2,23" fill="#8f4a34" stroke="#0b0e1a" strokeWidth="2" strokeLinejoin="round" />
+      <polygon points="28,2 2,23 28,23" fill="#ad6247" />
+      <rect x="6" y="21" width="44" height="29" fill="#cdb98f" stroke="#0b0e1a" strokeWidth="2" />
+      <rect x="38" y="21" width="12" height="29" fill="#b8a37a" />
+      <rect x="12" y="28" width="12" height="12" fill="#cfe8e0" stroke="#0b0e1a" strokeWidth="1.5" />
+      <line x1="18" y1="28" x2="18" y2="40" stroke="#0b0e1a" strokeWidth="1.2" />
+      <line x1="12" y1="34" x2="24" y2="34" stroke="#0b0e1a" strokeWidth="1.2" />
+      <rect x="30" y="32" width="12" height="18" fill="#3a2416" stroke="#0b0e1a" strokeWidth="1.5" />
+      <circle cx="39" cy="41.5" r="1.3" fill="#e8c468" />
+    </svg>
+  );
+}
+
+// A leaning stack of books instead of a flat tiered box — reads clearly as
+// "archive of experience" and gets some color variety instead of one flat
+// tan tone repeated four times.
+function ArchiveIcon() {
+  return (
+    <svg width="56" height="52" viewBox="0 0 56 52" style={{ overflow: "visible" }}>
+      <rect x="4" y="38" width="48" height="12" fill="#8a5a3f" stroke="#0b0e1a" strokeWidth="2" />
+      <rect x="4" y="38" width="48" height="3.5" fill="#a8734f" />
+      <rect x="8" y="27" width="40" height="12" fill="#2f6640" stroke="#0b0e1a" strokeWidth="2" />
+      <rect x="8" y="27" width="40" height="3.5" fill="#3f8654" />
+      <rect x="6" y="16" width="44" height="12" fill="#39536b" stroke="#0b0e1a" strokeWidth="2" />
+      <rect x="6" y="16" width="44" height="3.5" fill="#4f7391" />
+      <g transform="rotate(-6 28 10)">
+        <rect x="10" y="4" width="36" height="11" fill="#c9862f" stroke="#0b0e1a" strokeWidth="2" />
+        <rect x="10" y="4" width="36" height="3.2" fill="#e0a44f" />
+      </g>
     </svg>
   );
 }
@@ -74,22 +382,9 @@ export function River({ width, height }) {
 function BuildingIcon({ kind, lit }) {
   switch (kind) {
     case "house":
-      return (
-        <div style={{ position: "relative", width: 56, height: 52 }}>
-          <div style={{ position: "absolute", left: 0, top: 16, width: 56, height: 36, background: "#2a7a4f", boxShadow: "0 0 0 3px #0b0e1a" }} />
-          <div style={{ position: "absolute", left: -4, top: 0, width: 64, height: 20, background: "#d97757", clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)" }} />
-          <div style={{ position: "absolute", left: 24, top: 34, width: 10, height: 18, background: "#0b0e1a" }} />
-        </div>
-      );
+      return <HouseIcon />;
     case "archive":
-      return (
-        <div style={{ position: "relative", width: 56, height: 52, display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "center", gap: 3 }}>
-          <div style={{ width: 56, height: 12, background: "#8a6d3f", boxShadow: "0 0 0 2px #0b0e1a" }} />
-          <div style={{ width: 46, height: 12, background: "#a8854f", boxShadow: "0 0 0 2px #0b0e1a" }} />
-          <div style={{ width: 36, height: 12, background: "#6b5433", boxShadow: "0 0 0 2px #0b0e1a" }} />
-          <div style={{ width: 26, height: 12, background: "#8a6d3f", boxShadow: "0 0 0 2px #0b0e1a" }} />
-        </div>
-      );
+      return <ArchiveIcon />;
     case "grove":
       return (
         <div style={{ position: "relative", width: 56, height: 52 }}>
@@ -175,25 +470,44 @@ export function ZoneBuilding({ zone, active, lit }) {
 // A faceted warning sign, built with the same beveled-polygon language as
 // the fragment gem (light/dark facets + hard pixel outline) instead of a
 // flat CSS border-triangle, so it reads as part of the same art style.
+// A barricade spanning the road, with the warning sign fully embedded in
+// its face (the slab is sized to contain the whole triangle, not just its
+// base) — not a sign floating next to the path, but the thing blocking it.
 export function ObstacleMarker({ x, y, active, resolved, title }) {
   const face = resolved ? "#39ff88" : "#ff6b9d";
   const shade = resolved ? "#1f8f52" : "#b8395f";
   const highlight = resolved ? "#c8ffe0" : "#ffcfe0";
   const glow = resolved ? "rgba(57,255,136,0.55)" : "rgba(255,107,157,0.6)";
+  const stone = resolved ? "#5c7a68" : "#6b5860";
+  const stoneLight = resolved ? "#7a9c86" : "#8a7480";
 
   return (
-    <div className="absolute flex flex-col items-center gap-3" style={{ left: x - 48, top: y - 66, width: 96 }}>
+    <div className="absolute flex flex-col items-center gap-3" style={{ left: x - 60, top: y - 72, width: 120 }}>
       <div
         style={{
           position: "relative",
-          width: 56,
-          height: 52,
+          width: 84,
+          height: 60,
           transform: `scale(${BUILDING_SCALE})`,
           transformOrigin: "50% 100%",
           filter: `drop-shadow(0 0 ${active ? 10 : 6}px ${glow})`,
         }}
       >
-        <svg viewBox="0 0 56 52" width="56" height="52" style={{ overflow: "visible" }}>
+        <svg width="84" height="60" viewBox="0 0 84 60" style={{ position: "absolute", left: 0, top: 0, overflow: "visible" }}>
+          <rect x="1" y="1" width="82" height="58" fill={stone} stroke="#0b0e1a" strokeWidth="2.5" />
+          <rect x="1" y="1" width="82" height="6" fill={stoneLight} opacity="0.5" />
+          <line x1="1" y1="20" x2="83" y2="20" stroke="#0b0e1a" strokeWidth="1.4" opacity="0.45" />
+          <line x1="1" y1="39" x2="83" y2="39" stroke="#0b0e1a" strokeWidth="1.4" opacity="0.45" />
+          <line x1="22" y1="1" x2="22" y2="20" stroke="#0b0e1a" strokeWidth="1.1" opacity="0.35" />
+          <line x1="50" y1="1" x2="50" y2="20" stroke="#0b0e1a" strokeWidth="1.1" opacity="0.35" />
+          <line x1="12" y1="20" x2="12" y2="39" stroke="#0b0e1a" strokeWidth="1.1" opacity="0.35" />
+          <line x1="38" y1="20" x2="38" y2="39" stroke="#0b0e1a" strokeWidth="1.1" opacity="0.35" />
+          <line x1="65" y1="20" x2="65" y2="39" stroke="#0b0e1a" strokeWidth="1.1" opacity="0.35" />
+          <line x1="24" y1="39" x2="24" y2="58" stroke="#0b0e1a" strokeWidth="1.1" opacity="0.35" />
+          <line x1="56" y1="39" x2="56" y2="58" stroke="#0b0e1a" strokeWidth="1.1" opacity="0.35" />
+        </svg>
+
+        <svg width="56" height="52" viewBox="0 0 56 52" style={{ position: "absolute", left: 14, top: 4, overflow: "visible" }}>
           <polygon points="28,4 52,46 4,46" fill="#0b0e1a" transform="translate(1.5,2)" opacity="0.45" />
           <polygon points="28,4 4,46 28,46" fill={face} />
           <polygon points="28,4 52,46 28,46" fill={shade} />

@@ -33,9 +33,10 @@ const CORRIDOR_ANCHORS = [...riverSamples, ...ZONES.map(zoneCenter), ...FRAGMENT
 
 const CORRIDOR_LEASH = 260;
 
-export function withinCorridor(point) {
+export function withinCorridor(point, margin = 0) {
+  const limit = CORRIDOR_LEASH + margin;
   for (const a of CORRIDOR_ANCHORS) {
-    if (Math.hypot(point.x - a.x, point.y - a.y) <= CORRIDOR_LEASH) return true;
+    if (Math.hypot(point.x - a.x, point.y - a.y) <= limit) return true;
   }
   return false;
 }

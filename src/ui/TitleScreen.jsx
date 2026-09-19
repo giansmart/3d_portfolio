@@ -63,7 +63,7 @@ export default function TitleScreen({ onStart }) {
         </div>
 
         <p className="mono-font" style={{ color: "#cfd6cc", fontSize: 14, lineHeight: 1.7, maxWidth: 420, margin: 0 }}>
-          {dict.title.summary(profile.yearsEngineering, profile.yearsML)}
+          {dict.title.invite}
         </p>
 
         <div className="flex flex-wrap justify-center gap-2" style={{ maxWidth: 420 }}>

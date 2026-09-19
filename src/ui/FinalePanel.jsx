@@ -39,7 +39,7 @@ export default function FinalePanel({ onOpenContact, onClose }) {
             className="pixel-font"
             style={{ fontSize: 11, color: "#0b0e1a", background: "#39ff88", border: "none", padding: "12px 18px", cursor: "pointer" }}
           >
-            {dict.finale.sendSignal}
+            {dict.finale.sendMessage}
           </button>
           <a
             href="/Giancarlo_Poemape_CV.pdf"

@@ -7,8 +7,7 @@ export const translations = {
     title: {
       start: "PRESS START",
       hint: "WASD / ARROWS · TAP TO EXPLORE",
-      summary: (eng, ml) =>
-        `${eng} years as a software & data engineer — the last ${ml} spent building production ML systems.`,
+      invite: "I invite you to walk through my journey — follow the path, visit the stations, and collect the fragments of the story.",
       badgeEngineering: "YRS ENGINEERING",
       badgeMl: "YRS ML",
       badgeMasters: "M.S. DATA SCIENCE · UTEC '26",
@@ -39,9 +38,9 @@ export const translations = {
       close: "ESC / ✕",
     },
     finale: {
-      title: "THE BEACON IS LIT",
-      body: "Six fragments, twelve years, one throughline. That's the story — if it's the kind of engineer you're looking for, send a signal or grab the resume.",
-      sendSignal: "SEND A SIGNAL",
+      title: "END OF THE ROAD",
+      body: "Six fragments, twelve years, one story. If it made you want to talk, send a message — or grab the resume if you'd rather cut to the chase.",
+      sendMessage: "SEND A MESSAGE",
       downloadCv: "DOWNLOAD CV",
       keepExploring: "keep exploring →",
     },
@@ -78,8 +77,7 @@ export const translations = {
     title: {
       start: "COMENZAR",
       hint: "WASD / FLECHAS · TOCA PARA EXPLORAR",
-      summary: (eng, ml) =>
-        `${eng} años como ingeniero de software y datos — los últimos ${ml} construyendo sistemas de ML en producción.`,
+      invite: "Te invito a recorrer mi trayectoria — sigue el camino, pasa por las estaciones y junta los fragmentos de la historia.",
       badgeEngineering: "AÑOS INGENIERÍA",
       badgeMl: "AÑOS ML",
       badgeMasters: "MAESTRÍA DATA SCIENCE · UTEC '26",
@@ -110,9 +108,9 @@ export const translations = {
       close: "ESC / ✕",
     },
     finale: {
-      title: "EL FARO ESTÁ ENCENDIDO",
-      body: "Seis fragmentos, doce años, un solo hilo conductor. Esa es la historia — si buscas este tipo de ingeniero, envía una señal o descarga el CV.",
-      sendSignal: "ENVIAR UNA SEÑAL",
+      title: "FIN DEL CAMINO",
+      body: "Seis fragmentos, doce años, una sola historia. Si te dieron ganas de conversar, escríbeme — o descarga el CV si prefieres ir directo al grano.",
+      sendMessage: "ESCRÍBEME",
       downloadCv: "DESCARGAR CV",
       keepExploring: "seguir explorando →",
     },

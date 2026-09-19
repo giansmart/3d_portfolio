@@ -17,11 +17,12 @@ import { isTypingTarget } from "./domUtils";
 import { useGameLoop } from "./useGameLoop";
 import { useInput } from "./useInput";
 import { useFootsteps } from "./useFootsteps";
-import { Ground, River, ZoneBuilding, PlayerSprite, FragmentShard, ObstacleMarker, PersonMarker, DialogueBubble, PERSON_COLORS } from "./skins/cssSkin";
+import { Ground, BackgroundForest, River, ZoneBuilding, PlayerSprite, FragmentShard, ObstacleMarker, PersonMarker, DialogueBubble, PERSON_COLORS } from "./skins/cssSkin";
 import { fragments } from "../content/fragments";
 import { obstacles } from "../content/obstacles";
 import { recommendations } from "../content/recommendations";
 import rewardSound from "./sounds/mixkit-correct-answer-reward-952.wav";
+import obstacleSound from "./sounds/mixkit-little-cat-pain-meow-87.wav";
 import Hud from "../ui/Hud";
 import ZonePanel from "../ui/ZonePanel";
 import TouchControls from "../ui/TouchControls";
@@ -106,6 +107,7 @@ export default function World({ onExit }) {
   const finaleShownRef = useRef(false);
   const toastTimerRef = useRef(null);
   const rewardAudioRef = useRef(null);
+  const obstacleAudioRef = useRef(null);
   const [scrollOffset, setScrollOffset] = useState(0);
   const [muted, setMuted] = useState(() => {
     try {
@@ -148,7 +150,24 @@ export default function World({ onExit }) {
     const audio = new Audio(rewardSound);
     audio.volume = 0.5;
     rewardAudioRef.current = audio;
+
+    const obstacleAudio = new Audio(obstacleSound);
+    obstacleAudio.volume = 0.5;
+    obstacleAudioRef.current = obstacleAudio;
   }, []);
+
+  // Plays once each time the cat walks up to an unresolved obstacle — fires
+  // on the null->id transition (see findNearestObstacle), not every frame
+  // spent standing next to it. resolvedObstacles/muted deliberately excluded
+  // from deps: only the transition itself should retrigger this, not a
+  // resolve or a mute toggle while already standing there.
+  useEffect(() => {
+    if (!nearObstacleId || resolvedObstacles.has(nearObstacleId)) return;
+    if (muted || !obstacleAudioRef.current) return;
+    obstacleAudioRef.current.currentTime = 0;
+    obstacleAudioRef.current.play().catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nearObstacleId]);
 
   // Mouse-wheel look: pan the camera vertically without moving the character.
   // Resets the instant the player moves again, so it never fights the follow-cam.
@@ -283,6 +302,7 @@ export default function World({ onExit }) {
         style={{ width: WORLD.w, height: WORLD.h, transform: `translate3d(${-camX}px, ${-camY}px, 0)` }}
       >
         <Ground />
+        <BackgroundForest />
         <River width={WORLD.w} height={WORLD.h} />
         {FRAGMENT_SPOTS.filter((s) => !collected.has(s.id)).map((s) => (
           <FragmentShard key={s.id} x={s.x} y={s.y} />

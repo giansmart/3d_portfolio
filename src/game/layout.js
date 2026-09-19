@@ -71,16 +71,18 @@ export function zoneCenter(zone) {
 }
 
 // Positions only — narrative content lives in content/fragments.js, joined
-// by id. Scattered along the open field between zones, clear of every
-// building footprint above.
+// by id. Each sits ~60px off the river curve (see River's path in
+// skins/cssSkin.jsx / corridor.js's sampled copy of it), clear of every
+// building/obstacle/NPC footprint, so the cat barely has to step off the
+// path to collect one.
 export const FRAGMENT_RADIUS = 40;
 export const FRAGMENT_SPOTS = [
-  { id: "origin", x: 150, y: 980 },
-  { id: "first-cloud", x: 550, y: 700 },
-  { id: "the-leap", x: 1250, y: 1150 },
-  { id: "back-to-class", x: 1100, y: 500 },
-  { id: "curiosity", x: 1750, y: 550 },
-  { id: "why-this", x: 2000, y: 850 },
+  { id: "origin", x: 262, y: 1085 },
+  { id: "first-cloud", x: 505, y: 677 },
+  { id: "the-leap", x: 1387, y: 775 },
+  { id: "back-to-class", x: 1135, y: 460 },
+  { id: "curiosity", x: 1730, y: 538 },
+  { id: "why-this", x: 2235, y: 877 },
 ];
 
 // "Career challenge" encounters sitting directly on the river path — not
