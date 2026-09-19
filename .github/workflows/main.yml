@@ -32,6 +32,23 @@ jobs:
           VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}
           VITE_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_EMAILJS_PUBLIC_KEY }}
       
+      # TEMPORARY — decodes the actual OIDC token GitHub sends, so we can
+      # compare its `sub`/`aud` claims against the IAM role's trust policy
+      # instead of guessing why AssumeRoleWithWebIdentity is rejected.
+      # Safe to print: no secrets in these claims, just repo/ref metadata.
+      # Remove this step once the mismatch is found.
+      - name: Debug OIDC token claims
+        run: |
+          python3 -c "
+          import json, os, base64, urllib.request
+          url = os.environ['ACTIONS_ID_TOKEN_REQUEST_URL'] + '&audience=sts.amazonaws.com'
+          req = urllib.request.Request(url, headers={'Authorization': 'bearer ' + os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']})
+          token = json.load(urllib.request.urlopen(req))['value']
+          payload = token.split('.')[1]
+          payload += '=' * (-len(payload) % 4)
+          print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+          "
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
