@@ -75,3 +75,79 @@ body,
 .beacon-lit {
   animation: beacon-lit-anim 1.6s ease-in-out infinite;
 }
+
+@keyframes confetti-fall-anim {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(var(--drift, 0px), 110vh, 0) rotate(720deg);
+  }
+}
+
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  animation-name: confetti-fall-anim;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes firework-particle-anim {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0.3);
+    opacity: 0;
+  }
+}
+
+.firework-particle {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: firework-particle-anim 950ms ease-out forwards;
+}
+
+@keyframes firework-flash-anim {
+  0% {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.firework-flash {
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: firework-flash-anim 400ms ease-out forwards;
+}
+
+@keyframes fragment-poof-anim {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--px), var(--py)) scale(0.2) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+.fragment-poof-particle {
+  position: absolute;
+  border-radius: 2px;
+  animation: fragment-poof-anim 650ms ease-out forwards;
+}

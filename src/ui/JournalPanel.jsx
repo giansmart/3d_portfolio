@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { fragments } from "../content/fragments";
+import { FRAGMENT_ICONS } from "../game/skins/cssSkin";
 import { useLanguage, pickLang } from "../i18n/LanguageContext";
 
 export default function JournalPanel({ collectedIds, onClose }) {
@@ -54,15 +55,24 @@ export default function JournalPanel({ collectedIds, onClose }) {
           const unlocked = collectedIds.has(f.id);
           const localized = pickLang(f, lang);
           return (
-            <div key={f.id} style={{ marginBottom: 18, borderLeft: `2px solid ${unlocked ? "#ffb84d" : "#3a4a3a"}`, paddingLeft: 14 }}>
-              <div className="pixel-font" style={{ fontSize: 11, color: unlocked ? "#eef1e8" : "#5c6a5c" }}>
-                {unlocked ? localized.title : dict.journal.locked}
-              </div>
-              {unlocked && (
-                <p className="mono-font" style={{ margin: "6px 0 0", fontSize: 13, lineHeight: 1.6, color: "#cfd6cc" }}>
-                  {localized.body}
-                </p>
+            <div
+              key={f.id}
+              className="flex items-start"
+              style={{ gap: 12, marginBottom: 18, borderLeft: `2px solid ${unlocked ? "#ffb84d" : "#3a4a3a"}`, paddingLeft: 14 }}
+            >
+              {unlocked && FRAGMENT_ICONS[f.id] && (
+                <img src={FRAGMENT_ICONS[f.id]} alt="" draggable={false} style={{ width: 36, height: 36, flexShrink: 0 }} />
               )}
+              <div>
+                <div className="pixel-font" style={{ fontSize: 11, color: unlocked ? "#eef1e8" : "#5c6a5c" }}>
+                  {unlocked ? localized.title : dict.journal.locked}
+                </div>
+                {unlocked && (
+                  <p className="mono-font" style={{ margin: "6px 0 0", fontSize: 13, lineHeight: 1.6, color: "#cfd6cc" }}>
+                    {localized.body}
+                  </p>
+                )}
+              </div>
             </div>
           );
         })}

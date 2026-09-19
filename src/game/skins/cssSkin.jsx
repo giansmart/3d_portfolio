@@ -27,6 +27,12 @@ import workerChat2 from "../worker/frames/worker-chat-2.png";
 import workerIdleWoman from "../worker/frames/worker-idle-woman.png";
 import workerChat1Woman from "../worker/frames/worker-chat-1-woman.png";
 import workerChat2Woman from "../worker/frames/worker-chat-2-woman.png";
+import fragDatabase from "../particles/frames/database.png";
+import fragPython from "../particles/frames/python.png";
+import fragAws from "../particles/frames/aws.png";
+import fragDatabricks from "../particles/frames/databricks.png";
+import fragDeepLearning from "../particles/frames/deep-learning.png";
+import fragPyspark from "../particles/frames/pyspark.png";
 
 const ACCENT = "#39ff88";
 const IDLE = "#7a8a7a";
@@ -707,31 +713,88 @@ export function DialogueBubble({ x, y, name, company, country, quote, accent, li
   );
 }
 
-export function FragmentShard({ x, y }) {
+// One collectible per skill (content/fragments.js), using the pre-cropped
+// frames from particles/frames/ — each already ships with its own glow/
+// sparkle baked in and a transparent background, so the only extra "nice
+// effect" needed is a soft halo behind it plus the existing pulse animation.
+// eslint-disable-next-line react-refresh/only-export-components -- plain data map, not a component
+export const FRAGMENT_ICONS = {
+  database: fragDatabase,
+  python: fragPython,
+  aws: fragAws,
+  databricks: fragDatabricks,
+  "deep-learning": fragDeepLearning,
+  pyspark: fragPyspark,
+};
+
+export function FragmentShard({ x, y, id }) {
+  const icon = FRAGMENT_ICONS[id];
   return (
-    <div
-      className="absolute fragment-pulse"
-      style={{ left: x - 17, top: y - 17, width: 34, height: 34, filter: "drop-shadow(0 0 8px rgba(255,184,77,0.75))" }}
-    >
-      <svg viewBox="0 0 34 34" width="34" height="34" style={{ overflow: "visible" }}>
-        <defs>
-          <radialGradient id="gemGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#fff2d0" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#ffb84d" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <circle cx="17" cy="17" r="17" fill="url(#gemGlow)" />
-        {/* faceted gem body */}
-        <polygon points="17,4 25,13 17,30 9,13" fill="#0b0e1a" transform="translate(0.8,0.8)" opacity="0.5" />
-        <polygon points="17,4 25,13 17,16" fill="#fff2d0" />
-        <polygon points="17,4 9,13 17,16" fill="#ffd98a" />
-        <polygon points="9,13 17,16 17,30" fill="#e0942f" />
-        <polygon points="25,13 17,16 17,30" fill="#b8752a" />
-        <polygon points="17,4 25,13 17,30 9,13" fill="none" stroke="#0b0e1a" strokeWidth="1.4" strokeLinejoin="round" />
-        {/* sparkle accents */}
-        <path d="M28 5 L29 8.5 L32.5 9.5 L29 10.5 L28 14 L27 10.5 L23.5 9.5 L27 8.5 Z" fill="#fff8e8" opacity="0.9" />
-        <path d="M5 23 L5.7 25.2 L8 25.9 L5.7 26.6 L5 28.8 L4.3 26.6 L2 25.9 L4.3 25.2 Z" fill="#fff8e8" opacity="0.7" />
-      </svg>
+    <div className="absolute fragment-pulse" style={{ left: x - 30, top: y - 30, width: 60, height: 60 }}>
+      <div
+        className="absolute"
+        style={{
+          left: "50%",
+          top: "50%",
+          width: 60,
+          height: 60,
+          transform: "translate(-50%, -50%)",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(255,224,160,0.5) 0%, rgba(255,224,160,0) 70%)",
+        }}
+      />
+      {icon && (
+        <img
+          src={icon}
+          alt=""
+          draggable={false}
+          style={{
+            position: "relative",
+            width: 60,
+            height: 60,
+            display: "block",
+            userSelect: "none",
+            pointerEvents: "none",
+            filter: "drop-shadow(0 3px 6px rgba(0,0,0,0.55))",
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+const POOF_COLORS = ["#ffb84d", "#39ff88", "#5ec8e0", "#ff6b9d", "#fff2d0"];
+
+// Plays once where a FragmentShard just was, the instant World.jsx removes
+// it from the collected-filtered list — a burst of shards instead of the
+// icon just blinking out of existence. Positions are randomized per mount
+// (not seeded) since this is a one-shot transient effect, not part of the
+// stable world layout.
+export function FragmentPoof({ x, y }) {
+  const [particles] = useState(() =>
+    Array.from({ length: 10 }, (_, i) => {
+      const angle = (i / 10) * Math.PI * 2 + Math.random() * 0.4;
+      const dist = 22 + Math.random() * 22;
+      return {
+        id: i,
+        px: Math.cos(angle) * dist,
+        py: Math.sin(angle) * dist,
+        color: POOF_COLORS[i % POOF_COLORS.length],
+        size: 4 + Math.random() * 3,
+      };
+    })
+  );
+
+  return (
+    <div className="absolute" style={{ left: x, top: y, pointerEvents: "none" }}>
+      <span className="firework-flash" style={{ background: "#fff2d0", boxShadow: "0 0 16px 7px #ffb84d" }} />
+      {particles.map((p) => (
+        <span
+          key={p.id}
+          className="fragment-poof-particle"
+          style={{ width: p.size, height: p.size, background: p.color, "--px": `${p.px}px`, "--py": `${p.py}px` }}
+        />
+      ))}
     </div>
   );
 }

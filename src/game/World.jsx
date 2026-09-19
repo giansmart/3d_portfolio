@@ -17,12 +17,13 @@ import { isTypingTarget } from "./domUtils";
 import { useGameLoop } from "./useGameLoop";
 import { useInput } from "./useInput";
 import { useFootsteps } from "./useFootsteps";
-import { Ground, BackgroundForest, River, ZoneBuilding, PlayerSprite, FragmentShard, ObstacleMarker, PersonMarker, DialogueBubble, PERSON_COLORS } from "./skins/cssSkin";
+import { Ground, BackgroundForest, River, ZoneBuilding, PlayerSprite, FragmentShard, FragmentPoof, ObstacleMarker, PersonMarker, DialogueBubble, PERSON_COLORS } from "./skins/cssSkin";
 import { fragments } from "../content/fragments";
 import { obstacles } from "../content/obstacles";
 import { recommendations } from "../content/recommendations";
 import rewardSound from "./sounds/mixkit-correct-answer-reward-952.wav";
 import obstacleSound from "./sounds/mixkit-little-cat-pain-meow-87.wav";
+import fragmentSound from "./sounds/mixkit-fairy-cartoon-success-voice-344.wav";
 import Hud from "../ui/Hud";
 import ZonePanel from "../ui/ZonePanel";
 import TouchControls from "../ui/TouchControls";
@@ -101,6 +102,7 @@ export default function World({ onExit }) {
   const [isMoving, setIsMoving] = useState(false);
   const movingRef = useRef(false);
   const [collected, setCollected] = useState(() => new Set());
+  const [poofs, setPoofs] = useState([]);
   const [toastTitle, setToastTitle] = useState(null);
   const [showJournal, setShowJournal] = useState(false);
   const [showFinale, setShowFinale] = useState(false);
@@ -108,6 +110,7 @@ export default function World({ onExit }) {
   const toastTimerRef = useRef(null);
   const rewardAudioRef = useRef(null);
   const obstacleAudioRef = useRef(null);
+  const fragmentAudioRef = useRef(null);
   const [scrollOffset, setScrollOffset] = useState(0);
   const [muted, setMuted] = useState(() => {
     try {
@@ -154,6 +157,10 @@ export default function World({ onExit }) {
     const obstacleAudio = new Audio(obstacleSound);
     obstacleAudio.volume = 0.5;
     obstacleAudioRef.current = obstacleAudio;
+
+    const fragmentAudio = new Audio(fragmentSound);
+    fragmentAudio.volume = 0.5;
+    fragmentAudioRef.current = fragmentAudio;
   }, []);
 
   // Plays once each time the cat walks up to an unresolved obstacle — fires
@@ -225,6 +232,14 @@ export default function World({ onExit }) {
           setToastTitle(pickLang(frag, lang).title);
           clearTimeout(toastTimerRef.current);
           toastTimerRef.current = setTimeout(() => setToastTitle(null), 2500);
+          if (!muted && fragmentAudioRef.current) {
+            fragmentAudioRef.current.currentTime = 0;
+            fragmentAudioRef.current.play().catch(() => {});
+          }
+          setPoofs((prev) => [...prev, { id: spot.id, x: spot.x, y: spot.y }]);
+          setTimeout(() => {
+            setPoofs((prev) => prev.filter((p) => p.id !== spot.id));
+          }, 700);
           break;
         }
       }
@@ -305,7 +320,10 @@ export default function World({ onExit }) {
         <BackgroundForest />
         <River width={WORLD.w} height={WORLD.h} />
         {FRAGMENT_SPOTS.filter((s) => !collected.has(s.id)).map((s) => (
-          <FragmentShard key={s.id} x={s.x} y={s.y} />
+          <FragmentShard key={s.id} id={s.id} x={s.x} y={s.y} />
+        ))}
+        {poofs.map((p) => (
+          <FragmentPoof key={p.id} x={p.x} y={p.y} />
         ))}
         {OBSTACLES.map((ob) => (
           <ObstacleMarker

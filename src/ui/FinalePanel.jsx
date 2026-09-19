@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
+import Celebration from "./Celebration";
 
 export default function FinalePanel({ onOpenContact, onClose }) {
   const { dict } = useLanguage();
@@ -17,6 +18,7 @@ export default function FinalePanel({ onOpenContact, onClose }) {
       aria-modal="true"
       aria-label="All fragments found"
     >
+      <Celebration />
       <div
         className="w-full text-center"
         style={{

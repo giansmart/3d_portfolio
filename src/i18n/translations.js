@@ -7,7 +7,7 @@ export const translations = {
     title: {
       start: "PRESS START",
       hint: "WASD / ARROWS · TAP TO EXPLORE",
-      invite: "I invite you to walk through my journey — follow the path, visit the stations, and collect the fragments of the story.",
+      invite: "I invite you to walk through my journey: collect the skill fragments I picked up along the way and reach the end of the path to unlock my resume.",
       badgeEngineering: "YRS ENGINEERING",
       badgeMl: "YRS ML",
       badgeMasters: "M.S. DATA SCIENCE · UTEC '26",
@@ -77,7 +77,7 @@ export const translations = {
     title: {
       start: "COMENZAR",
       hint: "WASD / FLECHAS · TOCA PARA EXPLORAR",
-      invite: "Te invito a recorrer mi trayectoria — sigue el camino, pasa por las estaciones y junta los fragmentos de la historia.",
+      invite: "Te invito a recorrer mi trayectoria: junta los fragmentos de habilidades que fui ganando en el camino y llega al final para desbloquear mi CV.",
       badgeEngineering: "AÑOS INGENIERÍA",
       badgeMl: "AÑOS ML",
       badgeMasters: "MAESTRÍA DATA SCIENCE · UTEC '26",

@@ -1,72 +1,71 @@
-// Each fragment anchors on a real fact from the CV. The [TODO] is a
-// deliberate gap — the personal "why" behind the fact isn't mine to
-// invent, it's yours to fill in. Bilingual: this is UI/narrative content,
-// not a station or a recommendation, so it gets both languages.
+// Each fragment is a skill picked up somewhere along the career, grounded in
+// a real detail from content/experience.js. Bilingual: this is UI/narrative
+// content, not a station or a recommendation, so it gets both languages.
 export const fragments = [
   {
-    id: "origin",
+    id: "database",
     en: {
-      title: "Where It Started",
-      body: "Born and raised in the Peruvian Amazon, I studied Systems Engineering at UNAP before the pull of cloud and data work brought me to Lima. [TODO: what made engineering the choice, and what was that first move like?]",
+      title: "DATABASES",
+      body: "From Oracle SQL at TaxTech to Redshift at Zenta — over a decade writing and optimizing queries to move data at scale.",
     },
     es: {
-      title: "Dónde Empezó",
-      body: "Nací y crecí en la Amazonía peruana, estudié Ingeniería de Sistemas en la UNAP antes de que el mundo cloud y los datos me trajeran a Lima. [TODO: qué te hizo elegir ingeniería, y cómo fue esa primera mudanza]",
+      title: "BASES DE DATOS",
+      body: "Desde Oracle SQL en TaxTech hasta Redshift en Zenta — más de una década escribiendo y optimizando consultas para mover datos a gran escala.",
     },
   },
   {
-    id: "first-cloud",
+    id: "python",
     en: {
-      title: "The First Cloud Jump",
-      body: "TaxTech had me automating SUNAT's accounting books on AWS — my first real brush with serverless and Big Data tooling like Glue and Athena. [TODO: what's the story behind landing that first cloud-heavy role?]",
+      title: "PYTHON",
+      body: "The language behind almost everything I've built: Airflow pipelines, ML models, automation scripts — my default tool since day one.",
     },
     es: {
-      title: "El Primer Salto a la Nube",
-      body: "En TaxTech automatizaba los libros contables de SUNAT en AWS — mi primer contacto real con serverless y herramientas de Big Data como Glue y Athena. [TODO: cuál es la historia detrás de conseguir ese primer rol tan cloud?]",
+      title: "PYTHON",
+      body: "El lenguaje detrás de casi todo lo que he construido: pipelines con Airflow, modelos de ML, scripts de automatización — mi herramienta por defecto desde el primer día.",
     },
   },
   {
-    id: "the-leap",
+    id: "aws",
     en: {
-      title: "The Leap Into ML",
-      body: "At HatchWorks, the work shifted from moving data to reasoning over it — RAG, embeddings, agents. Five years in, it's still the part of the job I chase. [TODO: what tipped you from data engineering into ML specifically?]",
+      title: "AWS",
+      body: "Serverless at TaxTech (Cognito, ECS, Fargate), lakehouses with EMR/Glue/Athena at HatchWorks — AWS has been the backbone of nearly everything I've shipped to production.",
     },
     es: {
-      title: "El Salto al ML",
-      body: "En HatchWorks, el trabajo pasó de mover datos a razonar sobre ellos — RAG, embeddings, agentes. Cinco años después, sigue siendo la parte del trabajo que más persigo. [TODO: qué te inclinó de la ingeniería de datos hacia el ML específicamente?]",
+      title: "AWS",
+      body: "Serverless en TaxTech (Cognito, ECS, Fargate), lakehouses con EMR/Glue/Athena en HatchWorks — AWS ha sido la base de casi todo lo que he llevado a producción.",
     },
   },
   {
-    id: "back-to-class",
+    id: "databricks",
     en: {
-      title: "Back To The Classroom",
-      body: "Started a Master's in Data Science & AI at UTEC in 2024, alongside a full-time senior role. It wraps in 2026. [TODO: why go back for the degree after a decade in the field?]",
+      title: "DATABRICKS",
+      body: "Led the migration to Databricks (Delta Lake + Spark) at DolphData, improving orchestration, performance and cost for the ML workloads.",
     },
     es: {
-      title: "De Vuelta al Aula",
-      body: "Empecé una maestría en Data Science & AI en UTEC en 2024, en paralelo a un rol senior a tiempo completo. Termina en 2026. [TODO: por qué volver a estudiar después de una década en el campo?]",
+      title: "DATABRICKS",
+      body: "Lideré la migración a Databricks (Delta Lake + Spark) en DolphData, mejorando la orquestación, el rendimiento y el costo de las cargas de ML.",
     },
   },
   {
-    id: "curiosity",
+    id: "deep-learning",
     en: {
-      title: "Something Off The CV",
-      body: "Part-time at UTEC, I help classify damage in seismic isolators from vibration signals — about as far from cloud pipelines as it gets. [TODO: what drew you to a research project this different from the day job?]",
+      title: "DEEP LEARNING",
+      body: "From calibrated XGBoost classifiers to CNNs and Vision Transformers spotting damage in seismic isolators — the ML that hooks me most is the kind applied to real problems.",
     },
     es: {
-      title: "Algo Fuera del CV",
-      body: "A tiempo parcial en UTEC, ayudo a clasificar daños en aisladores sísmicos a partir de señales de vibración — todo lo opuesto a los pipelines en la nube. [TODO: qué te atrajo de un proyecto de investigación tan distinto al trabajo diario?]",
+      title: "DEEP LEARNING",
+      body: "De clasificadores XGBoost calibrados a CNNs y Vision Transformers detectando daños en aisladores sísmicos — el ML que más me engancha es el que se aplica a problemas reales.",
     },
   },
   {
-    id: "why-this",
+    id: "pyspark",
     en: {
-      title: "Why This Exists",
-      body: "A portfolio that's just a page felt like it undersold twelve years of work. [TODO: what do you actually want someone to feel after playing through this?]",
+      title: "PYSPARK",
+      body: "Ingesting and transforming hundreds of millions of records — PySpark is what makes processing at that scale possible.",
     },
     es: {
-      title: "Por Qué Existe Esto",
-      body: "Un portafolio que fuera solo una página se sentía insuficiente para doce años de trabajo. [TODO: qué quieres que sienta alguien después de jugar esto?]",
+      title: "PYSPARK",
+      body: "Ingiriendo y transformando cientos de millones de registros — PySpark es lo que hace posible procesar a la escala que estos pipelines necesitan.",
     },
   },
 ];
