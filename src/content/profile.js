@@ -6,6 +6,13 @@ export const profile = {
   location: "Lima, Peru",
   email: "giancarlo.poemape@hotmail.com",
   linkedin: "https://linkedin.com/in/giancarlopoemape",
+  socials: {
+    github: "https://github.com/giansmart",
+    linkedin: "https://www.linkedin.com/in/giancarlopoemape/",
+    instagram: "https://www.instagram.com/giancarlo_poemape/",
+    facebook: "https://www.facebook.com/giancarlo.poemape/",
+    tiktok: "https://www.tiktok.com/@gipo365",
+  },
   yearsEngineering: "12+",
   yearsML: "5+",
   utecUrl: "https://utec.edu.pe/",

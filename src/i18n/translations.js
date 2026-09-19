@@ -57,6 +57,18 @@ export const translations = {
       education: "EDUCATION",
       certifications: "CERTIFICATIONS",
     },
+    resume: {
+      viewCv: "Skip the game — view as CV →",
+      backToGame: "← Back to the interactive version",
+      tagline: "The same story, no game required.",
+      sections: {
+        about: "ABOUT",
+        experience: "EXPERIENCE",
+        skills: "SKILLS",
+        projects: "PROJECTS",
+        contact: "CONTACT",
+      },
+    },
     contact: {
       introPrefix: "Send a signal —",
       introOr: "or",
@@ -125,6 +137,18 @@ export const translations = {
     about: {
       education: "EDUCACIÓN",
       certifications: "CERTIFICACIONES",
+    },
+    resume: {
+      viewCv: "Saltar el juego — ver como CV →",
+      backToGame: "← Volver a la versión interactiva",
+      tagline: "La misma historia, sin necesidad de jugar.",
+      sections: {
+        about: "SOBRE MÍ",
+        experience: "EXPERIENCIA",
+        skills: "HABILIDADES",
+        projects: "PROYECTOS",
+        contact: "CONTACTO",
+      },
     },
     contact: {
       introPrefix: "Envía una señal —",

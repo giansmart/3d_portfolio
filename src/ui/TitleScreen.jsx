@@ -8,7 +8,7 @@ const chipStyle = {
   padding: "5px 12px",
 };
 
-export default function TitleScreen({ onStart }) {
+export default function TitleScreen({ onStart, onViewResume }) {
   const { dict, lang, toggleLang } = useLanguage();
   const { role } = pickLang(profile, lang);
 
@@ -99,6 +99,14 @@ export default function TitleScreen({ onStart }) {
         <div className="mono-font" style={{ fontSize: 11, letterSpacing: 2, color: "#5c6a5c" }}>
           {dict.title.hint}
         </div>
+
+        <button
+          onClick={onViewResume}
+          className="mono-font"
+          style={{ fontSize: 12, color: "#9aa39a", background: "none", border: "none", padding: "4px 8px", cursor: "pointer", textDecoration: "underline" }}
+        >
+          {dict.resume.viewCv}
+        </button>
       </div>
     </div>
   );
