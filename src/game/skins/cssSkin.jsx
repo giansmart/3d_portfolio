@@ -931,7 +931,18 @@ function MemeCatPhoto({ src, walking }) {
         src={src}
         alt=""
         draggable={false}
-        style={{ position: "relative", width: "100%", height: "100%", objectFit: "contain", userSelect: "none", pointerEvents: "none" }}
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          pointerEvents: "none",
+          // Stops iOS's long-press callout (save/copy/look up/translate) from
+          // popping up on the sprite image when taps land near/on it.
+          WebkitTouchCallout: "none",
+        }}
       />
     </div>
   );

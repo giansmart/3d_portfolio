@@ -14,9 +14,9 @@ export const translations = {
     },
     hud: {
       pressE: "PRESS E —",
-      soundOn: "♪ ON",
-      soundOff: "♪ OFF",
-      exit: "✕ TITLE",
+      soundOn: "ON",
+      soundOff: "OFF",
+      exit: "TITLE",
     },
     touch: {
       up: "Move up",
@@ -28,14 +28,14 @@ export const translations = {
     journal: {
       title: (n, total) => `JOURNAL — ${n} / ${total}`,
       locked: "??? — undiscovered fragment",
-      close: "ESC / ✕",
+      close: "✕",
     },
     toast: {
       found: "FRAGMENT FOUND —",
     },
     obstacle: {
       debug: "DEBUG IT →",
-      close: "ESC / ✕",
+      close: "✕",
     },
     finale: {
       title: "END OF THE ROAD",
@@ -84,9 +84,9 @@ export const translations = {
     },
     hud: {
       pressE: "PULSA E —",
-      soundOn: "♪ SÍ",
-      soundOff: "♪ NO",
-      exit: "✕ INICIO",
+      soundOn: "SÍ",
+      soundOff: "NO",
+      exit: "INICIO",
     },
     touch: {
       up: "Subir",
@@ -98,14 +98,14 @@ export const translations = {
     journal: {
       title: (n, total) => `DIARIO — ${n} / ${total}`,
       locked: "??? — fragmento sin descubrir",
-      close: "ESC / ✕",
+      close: "✕",
     },
     toast: {
       found: "FRAGMENTO ENCONTRADO —",
     },
     obstacle: {
       debug: "RESOLVERLO →",
-      close: "ESC / ✕",
+      close: "✕",
     },
     finale: {
       title: "FIN DEL CAMINO",

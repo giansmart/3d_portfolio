@@ -314,7 +314,17 @@ export default function World({ onExit }) {
     <div ref={rootRef} className="relative w-screen h-screen overflow-hidden" style={{ background: "#152a1c" }}>
       <div
         className="absolute top-0 left-0"
-        style={{ width: WORLD.w, height: WORLD.h, transform: `translate3d(${-camX}px, ${-camY}px, 0)` }}
+        style={{
+          width: WORLD.w,
+          height: WORLD.h,
+          transform: `translate3d(${-camX}px, ${-camY}px, 0)`,
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          // Belt-and-suspenders alongside the sprite/button-level fix: rapid
+          // taps near the d-pad shouldn't be able to select world labels or
+          // trigger iOS's long-press callout on anything in the play area.
+          WebkitTouchCallout: "none",
+        }}
       >
         <Ground />
         <BackgroundForest />

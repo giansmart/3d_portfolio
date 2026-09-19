@@ -59,11 +59,12 @@ export default function ZonePanel({ zone, onClose }) {
                 color: "#9aa39a",
                 background: "none",
                 border: "2px solid #3a4a3a",
-                padding: "6px 10px",
+                padding: "10px 14px",
+                minHeight: 40,
                 cursor: "pointer",
               }}
             >
-              ESC / &#10005;
+              <span className="hidden sm:inline">ESC / </span>&#10005;
             </button>
           </div>
           {Body ? <Body /> : null}

@@ -11,7 +11,9 @@ const DIRS = {
 const btnStyle = {
   width: 52,
   height: 52,
-  background: "rgba(18,23,42,0.85)",
+  background: "rgba(18,23,42,0.55)",
+  backdropFilter: "blur(6px)",
+  WebkitBackdropFilter: "blur(6px)",
   border: "2px solid #39ff88",
   color: "#39ff88",
   fontSize: 18,
@@ -26,6 +28,10 @@ const btnStyle = {
   WebkitTouchCallout: "none",
   WebkitTapHighlightColor: "transparent",
 };
+
+// Tailwind's `active:` variant so a press gives immediate visual feedback —
+// without it, held-down buttons looked identical to idle ones on touch.
+const btnFeedbackClass = "active:scale-90 active:brightness-125 transition-transform duration-75";
 
 const preventContextMenu = (e) => e.preventDefault();
 
@@ -55,8 +61,12 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
 
   return (
     <div className="md:hidden">
-      <div className="fixed right-6 bottom-28 z-20" style={{ width: 168, height: 168 }}>
+      <div
+        className="fixed right-6 z-20"
+        style={{ width: 168, height: 168, bottom: "calc(7rem + env(safe-area-inset-bottom))" }}
+      >
         <button
+          className={btnFeedbackClass}
           style={{ ...btnStyle, position: "absolute", left: 58, top: 0 }}
           onPointerDown={press("up")}
           onPointerUp={release("up")}
@@ -67,6 +77,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           &#9650;
         </button>
         <button
+          className={btnFeedbackClass}
           style={{ ...btnStyle, position: "absolute", left: 58, top: 116 }}
           onPointerDown={press("down")}
           onPointerUp={release("down")}
@@ -77,6 +88,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           &#9660;
         </button>
         <button
+          className={btnFeedbackClass}
           style={{ ...btnStyle, position: "absolute", left: 0, top: 58 }}
           onPointerDown={press("left")}
           onPointerUp={release("left")}
@@ -87,6 +99,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
           &#9664;
         </button>
         <button
+          className={btnFeedbackClass}
           style={{ ...btnStyle, position: "absolute", left: 116, top: 58 }}
           onPointerDown={press("right")}
           onPointerUp={release("right")}
@@ -102,7 +115,7 @@ export default function TouchControls({ onMove, onInteract, showInteract }) {
             onClick={onInteract}
             onContextMenu={preventContextMenu}
             aria-label={dict.touch.interact}
-            className="pixel-font"
+            className={`pixel-font ${btnFeedbackClass}`}
             style={{
               // Sits in the empty gap at the middle of the d-pad cross.
               position: "absolute",
