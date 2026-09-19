@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { experience } from "../../content/experience";
 import { useLanguage, pickLang } from "../../i18n/LanguageContext";
 
-export default function ExperiencePanel() {
+export default function ExperiencePanel({ onNavChange }) {
   const { dict, lang } = useLanguage();
   const [index, setIndex] = useState(0);
   const job = experience[index];
@@ -10,8 +10,8 @@ export default function ExperiencePanel() {
   const atStart = index === 0;
   const atEnd = index === experience.length - 1;
 
-  const goPrev = () => setIndex((i) => Math.max(0, i - 1));
-  const goNext = () => setIndex((i) => Math.min(experience.length - 1, i + 1));
+  const goPrev = useCallback(() => setIndex((i) => Math.max(0, i - 1)), []);
+  const goNext = useCallback(() => setIndex((i) => Math.min(experience.length - 1, i + 1)), []);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -20,7 +20,15 @@ export default function ExperiencePanel() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [goPrev, goNext]);
+
+  // Prev/Next render in ZonePanel's shared bottom-right dock, so they stay
+  // put instead of scrolling away with the content below. useLayoutEffect
+  // (not useEffect) so the buttons are correct on the very first paint —
+  // otherwise ZonePanel briefly renders its no-pagination OK button first.
+  useLayoutEffect(() => {
+    onNavChange?.({ onPrev: goPrev, onNext: goNext, atStart, atEnd, prevLabel: dict.experience.prev, nextLabel: dict.experience.next });
+  }, [onNavChange, goPrev, goNext, atStart, atEnd, dict]);
 
   return (
     <div>
@@ -36,50 +44,13 @@ export default function ExperiencePanel() {
         {job.company} · {job.date}
       </div>
 
-      <ul className="mono-font" style={{ margin: "0 0 24px", paddingLeft: 18, fontSize: 13, lineHeight: 1.7, color: "#cfd6cc" }}>
+      <ul className="mono-font" style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.7, color: "#cfd6cc" }}>
         {points.map((p) => (
           <li key={p} style={{ marginBottom: 6 }}>
             {p}
           </li>
         ))}
       </ul>
-
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "2px solid #232a3d", paddingTop: 16 }}>
-        <button
-          type="button"
-          className="pixel-font"
-          disabled={atStart}
-          onClick={goPrev}
-          style={{
-            fontSize: 10,
-            color: "#39ff88",
-            background: "none",
-            border: "2px solid #39ff88",
-            padding: "8px 14px",
-            cursor: atStart ? "not-allowed" : "pointer",
-            opacity: atStart ? 0.3 : 1,
-          }}
-        >
-          {dict.experience.prev}
-        </button>
-        <button
-          type="button"
-          className="pixel-font"
-          disabled={atEnd}
-          onClick={goNext}
-          style={{
-            fontSize: 10,
-            color: "#39ff88",
-            background: "none",
-            border: "2px solid #39ff88",
-            padding: "8px 14px",
-            cursor: atEnd ? "not-allowed" : "pointer",
-            opacity: atEnd ? 0.3 : 1,
-          }}
-        >
-          {dict.experience.next}
-        </button>
-      </div>
     </div>
   );
 }

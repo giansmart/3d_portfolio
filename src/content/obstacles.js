@@ -5,7 +5,7 @@
 export const obstacles = {
   "latency-wall": {
     en: {
-      title: "THE LATENCY WALL",
+      title: "THE LATENCY BOTTLENECK",
       problem:
         "A 150M-record daily workload, and one classifier stage quietly eating 99% of the lookup time. Every other optimization barely moved the needle. [TODO: what it actually felt like chasing this one down]",
       resolution:

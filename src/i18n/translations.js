@@ -28,15 +28,14 @@ export const translations = {
     journal: {
       title: (n, total) => `JOURNAL — ${n} / ${total}`,
       locked: "??? — undiscovered fragment",
-      close: "✕",
     },
     toast: {
       found: "FRAGMENT FOUND —",
     },
     obstacle: {
       debug: "DEBUG IT →",
-      close: "✕",
     },
+    ok: "OK",
     finale: {
       title: "END OF THE ROAD",
       body: "Six fragments, twelve years, one story. If it made you want to talk, send a message — or grab the resume if you'd rather cut to the chase.",
@@ -98,15 +97,14 @@ export const translations = {
     journal: {
       title: (n, total) => `DIARIO — ${n} / ${total}`,
       locked: "??? — fragmento sin descubrir",
-      close: "✕",
     },
     toast: {
       found: "FRAGMENTO ENCONTRADO —",
     },
     obstacle: {
       debug: "RESOLVERLO →",
-      close: "✕",
     },
+    ok: "OK",
     finale: {
       title: "FIN DEL CAMINO",
       body: "Seis fragmentos, doce años, una sola historia. Si te dieron ganas de conversar, escríbeme — o descarga el CV si prefieres ir directo al grano.",
