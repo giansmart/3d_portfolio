@@ -1,6 +1,8 @@
 # Giancarlo Poémape — Portfolio
 
-An explorable, top-down "data pipeline" world: a meme-cat walks a river connecting five stations (About, Experience, Skills, Workshop, Contact), collects fragments of career story along the way, and runs into real career-challenge "obstacles" and LinkedIn-recommendation NPCs on the path.
+An explorable, top-down "data pipeline" world: a meme-cat walks a road connecting five stations (About, Experience, Skills, Workshop, Contact), collects skill fragments picked up along a twelve-year career, and runs into real career-challenge "obstacles" (barricades blocking the road) and LinkedIn-recommendation NPCs on the way.
+
+![Gameplay demo](public/demo.gif)
 
 Live at [giposmart.com](https://giposmart.com).
 
@@ -46,12 +48,13 @@ src/
   game/
     layout.js       world size, zone/fragment/obstacle/NPC coordinates
     collision.js     AABB collision + corridor-leash movement gating
-    corridor.js      keeps the player within a leash of the river path/content
+    corridor.js      keeps the player within a leash of the road/content
     useGameLoop.js   requestAnimationFrame loop with delta-time
     useInput.js      keyboard + touch d-pad input
     useFootsteps.js  footstep + reward sound effects
-    skins/cssSkin.jsx  the ONLY file that renders the world (river, buildings,
-                        player sprite, NPCs, dialogue bubbles, fragments...)
+    skins/cssSkin.jsx  the ONLY file that renders the world (road, forest,
+                        buildings, player sprite, NPCs, dialogue bubbles,
+                        skill fragments...)
   ui/              HUD, title screen, station panels, journal, touch controls
 ```
 
